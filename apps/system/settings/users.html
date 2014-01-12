@@ -1,0 +1,38 @@
+<script>
+document.write(parent.Window.LoadApplicationAPI());
+function saveSettings() {
+  Setting.SaveSetting(true,"Gnextop","autologin",document.getElementById("autologin").checked);
+  Setting.SaveSetting(true,"Gnextop","autologinuser",Gnextop.User);
+  CommonDialog.ShowMsg(false, "Gnextop", "Saved");
+  closeW();
+}
+
+function closeW() {
+  parent.Window.Close();
+}
+</script>
+<html>
+<body>
+If you would like Gnextop to automatically log onto this account when started, enable this setting. <br /><br />
+<i>Changes will take effect when Gnextop is restarted</i><br /><br />
+<label><input type="radio" name="kb" id="autologin">Use Automatic login with username "<script>document.write(Gnextop.User);</script>"</label><br />
+<label><input type="radio" name="kb" id="noautologin">Do not use Automatic login</label><br /><br />
+<br>
+<script>
+document.write(Control.Button.CreateNew("Value=Save","onClick=saveSettings();","Style=width:80px;")+
+               Control.Button.CreateNew("Value=Cancel","onClick=closeW();","Style=width:80px;"));
+
+document.getElementById("autologin").checked = (Setting.GetSetting(true,"Gnextop","autologin",false) ? true : false);
+document.getElementById("noautologin").checked = (Setting.GetSetting(true,"Gnextop","autologin",false) ? false : true);
+</script>
+</body>
+</html>
+<script>
+Me.Title = "Users";
+Me.Icon = "images/icons/menu/users.png";
+LoadingComplete();
+if(Setting.GetSetting(true, "Gnextop", "singleusermode", false)) {
+	CommonDialog.ShowMsg(false, "Gnextop", "Gnextop is installed in single-user mode. A reinstallation is required to use access control features.");
+	closeW();
+}
+</script>

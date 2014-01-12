@@ -1,0 +1,13 @@
+<html>
+  <body onload="top.Disk.DiskReady()">
+    <form action="" method="post" name="vdisk" id="vdisk">
+      <input type="text" id="txtVDiskSectors" name="DiskSectors" value="" />
+      <script>
+        top.Disk.SectorCount = parseInt(document.getElementById("txtVDiskSectors").value);
+        for (var intSector=0; intSector < top.Disk.SectorCount; intSector++) {
+          document.write('<input type="text" id="txtVDisk' + intSector + '" name="DiskContents' + intSector + '" value="" />');
+        }
+      </script>
+    </form>
+  </body>
+</html>

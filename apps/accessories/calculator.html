@@ -1,0 +1,125 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<title>Calculator</title>
+
+<script language="JavaScript">
+
+function TypeOutput(strChar) {
+  if(document.getElementById('output').value == null || document.getElementById('output').value == "0")
+    document.getElementById('output').value = strChar
+  else
+    document.getElementById('output').value += strChar
+  document.getElementById('output').refresh();
+}
+
+function cos() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = Math.cos(document.getElementById('output').value);
+}
+
+function sin() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = Math.sin(document.getElementById('output').value);
+}
+
+function tan() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = Math.tan(document.getElementById('output').value);
+}
+
+function sqrt() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = Math.sqrt(document.getElementById('output').value);
+}
+
+function ln() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = Math.log(document.getElementById('output').value);
+}
+
+function exp() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = Math.exp(document.getElementById('output').value);
+}
+
+function deleteChar() {
+  document.getElementById('output').value = document.getElementById('output').value.substring(0, document.getElementById('output').value.length - 1);
+}
+
+function changeSign() {
+  if(document.getElementById('output').value.substring(0, 1) == "-")
+    document.getElementById('output').value = document.getElementById('output').value.substring(1, document.getElementById('output').value.length)
+  else
+    document.getElementById('output').value = "-" + document.getElementById('output').value
+}
+
+function compute() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = eval(document.getElementById('output').value)
+}
+
+function square() {
+  if (checkNum(document.getElementById('output').value)) document.getElementById('output').value = eval(document.getElementById('output').value) * eval(document.getElementById('output').value)
+}
+
+function checkNum(str) {
+  for (var i = 0; i < str.length; i++) {
+    var ch = str.substring(i, i+1)
+    if (ch < "0" || ch > "9") {
+      if (ch != "/" && ch != "*" && ch != "+" && ch != "-" && ch != "."
+        && ch != "(" && ch!= ")") {
+        alert("invalid entry!")
+        return false
+        }
+      }
+    }
+    return true
+}
+</script>
+<style>
+body {
+  margin-left:70px;
+}
+</style>
+</head>
+<body>
+<br /><br />
+<script>document.write(Control.TextBox.CreateNew("ID=output","Value=0","Style=width:324px;"));</script>
+<br/><br/>
+<script>
+document.write(Control.Button.CreateNew("Value=exp","onClick=exp();","Style=width:52px;") +
+Control.Button.CreateNew("Value=7","onClick=TypeOutput(7);","Style=width:52px;") +
+Control.Button.CreateNew("Value=8","onClick=TypeOutput(8);","Style=width:52px;") +
+Control.Button.CreateNew("Value=9","onClick=TypeOutput(9);","Style=width:52px;") +
+Control.Button.CreateNew("Value=/","onClick=TypeOutput('/');","Style=width:52px;") +
+"<br/>" +
+Control.Button.CreateNew("Value=ln","onClick=ln();","Style=width:52px;") +
+Control.Button.CreateNew("Value=4","onClick=TypeOutput(4);","Style=width:52px;") +
+Control.Button.CreateNew("Value=5","onClick=TypeOutput(5);","Style=width:52px;") +
+Control.Button.CreateNew("Value=6","onClick=TypeOutput(6);","Style=width:52px;") +
+Control.Button.CreateNew("Value=*","onClick=TypeOutput('*');","Style=width:52px;") +
+"<br/>" +
+Control.Button.CreateNew("Value=sqrt","onClick=sqrt();","Style=width:52px;") +
+Control.Button.CreateNew("Value=1","onClick=TypeOutput(1)","Style=width:52px;") +
+Control.Button.CreateNew("Value=2","onClick=TypeOutput(2)","Style=width:52px;") +
+Control.Button.CreateNew("Value=3","onClick=TypeOutput(3)","Style=width:52px;") +
+Control.Button.CreateNew("Value=-","onClick=TypeOutput('-')","Style=width:52px;") +
+"<br/>" +
+Control.Button.CreateNew("Value=sq","onClick=square()","Style=width:52px;") +
+Control.Button.CreateNew("Value=0","onClick=TypeOutput(0)","Style=width:52px;") +
+Control.Button.CreateNew("Value=.","onClick=TypeOutput('.')","Style=width:52px;") +
+Control.Button.CreateNew("Value=+/-","onClick=changeSign();","Style=width:52px;") +
+Control.Button.CreateNew("Value=+","onClick=TypeOutput('+')","Style=width:52px;") +
+"<br/>" +
+Control.Button.CreateNew("Value=(","onClick=TypeOutput('(')","Style=width:52px;") +
+Control.Button.CreateNew("Value=cos","onClick=cos();","Style=width:52px;") +
+Control.Button.CreateNew("Value=sin","onClick=sin();","Style=width:52px;") +
+Control.Button.CreateNew("Value=tan","onClick=tan();","Style=width:52px;") +
+Control.Button.CreateNew("Value=)","onClick=TypeOutput(')')","Style=width:52px;") +
+"<br/>" +
+Control.Button.CreateNew("Value=AC","onClick=document.getElementById('output').value = 0","Style=width:85px") +
+Control.Button.CreateNew("Value=<img src='../../system/keyboard/bk_arrow.png' />","onClick=deleteChar();","Style=width:85px") +
+Control.Button.CreateNew("Value==","onClick=compute();","Style=width:118px;"));
+</script>
+</body>
+</html>
+
+<script>
+Me.Title = "Calculator";
+Me.Icon = "images/icons/menu/kcalc.png";
+LoadingComplete();
+</script>

@@ -1,0 +1,22 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<body> 
+<h1>PSPDF</h1>
+<FORM METHOD="POST" ACTION="http://www.sanface.com/cgi-bin/webpdfviewer.cgi" ENCTYPE="multipart/form-data"> 
+<B>Browse and Select your PDF you want to View</B><BR> 
+<INPUT TYPE="file" CLASS="i1" NAME="uploaded_file"> 
+<P> 
+<b>Select the PDF Format</b><BR> 
+<b><INPUT TYPE="radio" NAME="format" VALUE="html" CHECKED>HTML<INPUT TYPE="radio" NAME="format" VALUE="text">Text</b> 
+<P> 
+<INPUT TYPE="reset" VALUE="Clear">&nbsp;<INPUT TYPE="submit" NAME="submit" VALUE="View"><INPUT TYPE="hidden" NAME="cgifields" VALUE="format"><INPUT TYPE="hidden" NAME="cgifields" VALUE="ascii"> 
+</FORM> 
+<b>PSPDF - The PSP PDF Viewer - by Ocean19</b>
+<form name="Return" action="index.html"><input type="button" value="Return to Index" onClick="location.href='index.html';"></form> 
+</CENTER> 
+</BODY> 
+</HTML>
+<script>
+Me.Title = "PSPDF";
+Me.Icon = "images/icons/menu/pdf.png";
+LoadingComplete();
+</script>

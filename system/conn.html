@@ -1,0 +1,16 @@
+<img id="conncheck" onerror='reportconn(false)' onload='reportconn(true)' />
+<script>
+iteration = 0;
+
+function checkconn() {
+  // Query is needed to prevent loading of cache
+  document.getElementById('conncheck').src = "http://blazebyte.org/images/on.gif?" + iteration;
+  iteration++;
+}
+
+function reportconn(blnConn) {
+  top.Gnextop.ReportConnection(blnConn);
+  setTimeout("checkconn();",3000)
+}
+//checkconn()
+</script>

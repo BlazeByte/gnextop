@@ -1,0 +1,75 @@
+<html>
+<head>
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+  <script>
+    Gnextop = top.Gnextop;
+    Gnextop.ReturnLoading(" Done. @nln Loading Login Framework...");
+    Head = top.Head;
+    Setting = top.Setting;
+    Control = top.Control;
+	Base = top.Base;
+
+    Gnextop.Authenticated = false;
+    Gnextop.User = "default";
+	Gnextop.ThereDir = "default";
+    //Gnextop.ThemeDir = Setting.GetSetting(false,"Gnextop","Theme");
+    document.write(Head.LinkScripts("script/get.api.js"));
+
+    function SubmitLogin(strUsername, strPassword) {
+      /*Gnextop.User = strUsername;
+      if (Setting.SettingExists(false,"Gnextop","Password")) {
+        if (strPassword == Setting.GetSetting(false,"Gnextop","Password",null)) { // if the password is correct
+          Gnextop.Authenticated = true;
+          Gnextop.ThemeDir = Setting.GetSetting(Gnextop.User,"Gnextop","Theme");
+          Setting.SaveSetting(true,"Gnextop","LastUser",Gnextop.User);
+          location = Gnextop.Root + "system/desktop.html";
+        } else {
+          Gnextop.Authenticated = false
+          Gnextop.User = "default";
+          top.frames["iscreen"].document.getElementById("error").innerHTML = "Password incorrect.";
+        }
+      } else {
+        Gnextop.Authenticated = false
+        Gnextop.User = "default";
+        top.frames["iscreen"].document.getElementById("error").innerHTML = "User does not exist.";
+      }*/
+	  if(Base.FindRecords("sys", "users", "name="+strUsername+",password="+strPassword).length == 1) {
+		Gnextop.User = strUsername;
+		Gnextop.Authenticated = true;
+		Gnextop.ThemeDir = Setting.GetSetting(Gnextop.User,"Gnextop","Theme");
+		Setting.SaveSetting(true,"Gnextop","LastUser",Gnextop.User);
+		location = Gnextop.Root + "system/desktop.html";
+	  }
+	  else
+		top.frames["iscreen"].document.getElementById("error").innerHTML = "Username or password incorrect.";
+    }
+  </script>
+</head>
+
+<body onload="Gnextop.BootComplete();">
+  <!-- WARNING: Do not combine scripts below. They use document.write, which does not apply until script closure. -->
+  <script>
+    document.write(Head.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/main.css"));
+  </script>
+  <script>
+    Gnextop.ReturnLoading(" Done. @nln Loading Interface StyleSheets...");
+    document.write(Head.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/controls.css"));
+  </script>
+  <script>
+    Gnextop.ReturnLoading(" Done. @nln Preparing Login Screen...");
+    var strHTML = "<img id='LoginBG' src='../themes/"+Gnextop.ThemeDir+"/images/login_bg.jpg' /><div id='version'>" + Gnextop.Version + '</div><div id="divLogin"><div id="greeting">Please type your username and password below:</div><div id="inputs">' +
+                    Control.TextBox.CreateNew("ID=username","Value="+Setting.GetSetting(true,"Gnextop","LastUser",""),"Style=width:180px;") +
+                    "<br />" +
+                    Control.PassBox.CreateNew("ID=password","Style=width:180px;") +
+                    "<br />" +
+                    Control.Button.CreateNew("Value=Login","onClick=SubmitLogin(document.getElementById('username').value,document.getElementById('password').value)","Style=width:80px;") +
+                  '</div><br /><br />';
+    strHTML += "<div id='error'> </div>";
+    strHTML += "</div>";
+    document.write(strHTML);
+  </script>
+  <script>
+    Gnextop.ReturnLoading(" Done. @nln Preparing Interface...");
+  </script>
+</body>
+</html>

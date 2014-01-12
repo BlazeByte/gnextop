@@ -1,0 +1,133 @@
+<style type="text/css">
+  body {
+    margin:0px;
+    font-size:12px;
+    overflow:hidden;
+  }
+  
+  .week {
+    clear:both;
+  }
+  
+  .day {
+    display:block;
+    float:left;
+    width:30px;
+    height:22px;
+    background-color:eeeeee;
+    color:#000000;
+    border-width:1px;
+    border-style: solid;
+    border-color: #ffffff #cccccc #cccccc #ffffff;
+    text-decoration:none;
+  }
+</style>
+<script>
+  var now = new Date;
+  var dd = now.getDate();
+  var mm = now.getMonth();
+  var dow = now.getDay();
+  var yyyy = now.getFullYear();
+  
+  var Days = new Array("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
+
+  var currMonth = parseInt(parent.currMonth);
+  var currYear = parseInt(parent.currYear);
+
+  var prevMonth = (currMonth != 0) ? currMonth - 1 : 11;
+  
+  function maxDays(mm, yyyy){
+    var mDay;
+    if((mm == 3) || (mm == 5) || (mm == 8) || (mm == 10)){
+      mDay = 30;
+      }
+      else{
+        mDay = 31
+        if(mm == 1){
+          if (yyyy/4 - parseInt(yyyy/4) != 0){
+            mDay = 28
+          }
+          else{
+            mDay = 29
+          }
+      }
+    }
+    return mDay;
+  }
+
+  var text = "";
+  
+  // Weekday headings
+  text += "<div class='week'>";
+  for (var intDay = 0; intDay < 7; intDay++)
+    text += "<div class='day'>" + Days[intDay] + "</div>"
+
+  text += "</div>";
+  
+  
+  var mmyyyy = new Date()
+  mmyyyy.setFullYear(currYear)
+  mmyyyy.setMonth(currMonth)
+  mmyyyy.setDate(1)
+  var day1 = mmyyyy.getDay()
+
+  if (day1 == 0) {
+    day1 = 7
+  }
+
+  var arrN = new Array(41);
+  var aa;
+  
+  for (ii=0;ii<day1;ii++){
+    arrN[ii] = maxDays((prevMonth),currYear) - day1 + ii + 1
+  }
+  
+  aa = 1
+  for (ii=day1;ii<=day1+maxDays(currMonth,currYear)-1;ii++){
+    arrN[ii] = aa
+    aa += 1
+  }
+  
+  aa = 1
+  for (ii=day1+maxDays(currMonth,currYear);ii<=41;ii++){
+    arrN[ii] = aa
+    aa += 1
+  }
+  
+
+  var intID = 0;
+  for(var intWeek = 0; intWeek < 6; intWeek++) {
+    text += "<div class='week'>";
+    for(var intWeekDay = 0; intWeekDay < 7; intWeekDay++ ) {
+      var Style = "";
+      var thismonth = currMonth;
+      if ((intID < 7) && (arrN[intID] > 20)) {  //if prev month
+        thismonth--;
+        Style+="color:#cccccc;";
+      }
+      if ((intID > 27) && (arrN[intID] < 20)) { // If next month
+        thismonth++;
+        Style+="color:#cccccc;";
+      }
+      if (thismonth == currMonth) { // If it is the current month
+        var FoundRecord = top.Base.FindRecords("cal","events","date="+arrN[intID]+"-"+thismonth+"-"+currYear);
+        if(FoundRecord.length>0) Style+="font-weight:bold;";
+        if ((intWeekDay==0) || (intWeekDay==6)) // If weekend, red text
+          Style+="color:#ff0000;";
+
+        if ((arrN[intID]==dd) && (mm==currMonth) && (yyyy==currYear)) // Make green if today
+          Style+="background-color:#90EE90;";
+  
+        if ((arrN[intID]==parent.selDay) && (currMonth==parent.selMonth) && (currYear==parent.selYear)) // Make yellow if selected
+          Style+="background-color:#EEEE90;";
+      }
+      
+      text += "<a class='day' id='sp" + intID + "' style='"+Style+"' href='javascript:parent.selectDate("+currYear+","+thismonth+","+arrN[intID]+");'>" + arrN[intID] + "</a>";
+      intID += 1;
+    }
+    text += "</div>";
+  }
+
+  text += "</form>";
+  document.write(text);
+</script>

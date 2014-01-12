@@ -1,0 +1,75 @@
+<script>
+var Gnextop = top.Gnextop;
+
+document.write(Gnextop.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/controls.css"));
+document.write(Gnextop.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/application.css"));
+document.write(Gnextop.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/window.css"));
+
+function SelectFile() {
+  CommonDialog.Filename = document.getElementById("filename").value;
+  CommonDialog.CallAfter();
+  Close();
+}
+
+function Close() {
+  Gnextop.iScreen.document.getElementById('cdfile').style.visibility='hidden';
+}
+
+function ChooseFile(strFile){
+  document.getElementById("filename").value = strFile;
+}
+</script>
+<style>
+  th {
+    text-align:left;
+    background-color:#dddddd;
+    border-style:solid;
+    border-color:#999999;
+    border-width:0px 1px 1px 0px;
+    font-weight:normal;
+  }
+  </style>
+<div class="divWindow" style="visibility:visible;height:272px;">
+  <!--img src='' class='WindowIcon' align='left' /--><div id="windowTitle" class="divWindowTitle" style="padding-bottom:3px;">Open...</div>
+  <div class="divButtons"></a><a href="javascript:Cancel();" class="divClose"></a></div>
+  <div style="width:100%;height:230px;overflow:auto;background-color:#ffffff;">
+  <table width="100%" cellpadding="0" cellspacing="1">
+  <tr><th>Name</th><th>Size</th><th>Type</th><th>Date</th></tr>
+  <script>
+  var aFiles = Disk.Data.split(Disk.Char2);
+
+  function lookupVar(strvar){
+    for ( var i = 0 ; i < variable.length ; i++ ) {
+      if(variable[i] == strvar){
+        return value[i];
+      }
+    }
+  }
+
+  for (var intFile = 0; intFile < aFiles.length-1; intFile++) {
+    var aFileParts = aFiles[intFile].split(Disk.Char1);
+    var vars = aFileParts[1].split(";");
+    
+    var variable = new Array();
+    var value = new Array();
+    
+    for ( var i = 0 ; i < vars.length-1 ; i++ ) {
+      var varparts = vars[i].split("=");
+      variable[value.length] = varparts[0];
+      value[value.length] = varparts[1];
+    }
+    
+    var fileDate = new Date()
+    fileDate.setTime(lookupVar("Date"));
+    document.write("<tr><td><a href='javascript:ChooseFile(\""+aFileParts[0]+"\");'>" + aFileParts[0] + "</a></td>"+
+                   "<td>" + (aFiles[intFile].length+1) + " bytes</td>" +
+                   "<td>"+lookupVar("Type")+"</td>" +
+                   "<td>"+fileDate.getDate()+"/"+fileDate.getMonth()+"/"+(fileDate.getYear()+1900)+"</td></tr> ");
+  } 
+  </script>
+  </table>
+  </div>
+  <script>document.write(Control.TextBox.CreateNew("ID=filename","Value=Untitled","Style=width:184px;") +
+                         Control.Button.CreateNew("Value=Select","onClick=SelectFile();","Style=width:80px;float:right;") +
+                         Control.Button.CreateNew("Value=Cancel","onClick=Close();","Style=width:80px;float:right;"));</script>
+</div>

@@ -1,0 +1,132 @@
+<script>
+Gnextop = top.Gnextop;
+Gnextop.iScreen = self;
+</script>
+<script src="script/bootscreen.api.js"></script>
+<script src="script/head.api.js"></script>
+<script src="script/glib.js"></script>
+<script src="script/menu.api.js"></script>
+<script src="script/window.api.js"></script>
+<script src="script/widget.api.js"></script>
+<link rel="stylesheet" href="screen.css" /> 
+
+<body bgcolor="#000000" text="#fffff" onResize="Menu.Hide('all');">
+  <script>
+    Disk = top.Disk;
+    Setting = top.Setting;
+    Base = top.Base;
+    
+    // These are the "auxilary screens" - simply screens that will appear above everything else
+    var auxscreens = '<iframe id="conn" name="conn" src="conn.html" frameborder="0"></iframe>' +
+                     '<div id="auxscreens">' +
+                      '<iframe id="kb" name="kb" frameborder="0"></iframe>' +
+                      '<iframe id="cdfile" name="cdfile" src="commondialog/file.html" frameborder="0"></iframe>' +
+                      '<iframe id="cdnet" name="cdfile" src="commondialog/net.html" frameborder="0"></iframe>' +
+                      '<iframe id="cdmsg" name="cdmsg" src="commondialog/msg.html" frameborder="0"></iframe>' +
+                     '</div>';
+    
+    Gnextop.Boot.Cmd('Gnextop.CheckCompatibility();',                                                                 "Checking compatibility...");
+
+    Gnextop.Boot.Cmd('Gnextop.CheckTheme();',                                                                	      "Checking Theme...");
+
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkScripts("script/controls.api.js"))',                           "Loading Gnextop Controls Library...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkScripts("script/commondialog.api.js"))',                       "Loading Common Dialog Framework...");
+    
+    //Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.Widgets.LoadLibs())',                       "Loading Widget Libraries...");
+    
+    Gnextop.Boot.Cmd('Setting.LoadSettingsFromDisk()',                                                                "Getting Settings...");
+
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/main.css"))',       "Loading Main Styles...");
+    
+    //Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Head.LinkScripts("script/clock.api.js"))',                              "Preparing Clock API Libraries...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/panel.css"))',      "Loading Panel Styles...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/menu.css"))',       "Loading Menu Styles...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/window.css"))',     "Loading Window Styles...");
+
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/controls.css"))',   "Loading Control Styles...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.LinkStyles("../themes/"+Gnextop.ThemeDir+"/css/desktop.css") + "<img id=\'DesktopBG\' src=\'" + Setting.GetSetting(Gnextop.User,"Gnextop","BGImage","../themes/system/images/wallpaper.png") + "\'/>")', 
+                                                                                                                      "Loading Desktop Styles...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add("<div id=\\\"divDesktop\\\" onclick=\\\"if(event.target.id == \'divDesktopIcons\') Menu.Hide(\'all\');\\\">")', 
+                                                                                                                      "Preparing Desktop");
+
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Menu.Write("all"))',                                                    "Writing Menus...");
+
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Gnextop.Widgets.Write())',                                                      "Writing Widgets...");
+    
+
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(Window.WriteWindows())',                                                "Creating Windows...");
+
+    
+    //Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(\'<div id="DesktopVersion">\' + Gnextop.Version + \'<br />Free software from BlazeByte.org</div>\')', 
+    //                                                                                                                  "Version info...");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add("</div>")',                                                             "Finished Desktop");
+    
+    Gnextop.Boot.Cmd('Gnextop.Boot.Buffer.Add(\'' + auxscreens + '\')',                                               "Preparing Auxilary Screens...");
+    
+    Gnextop.Boot.Cmd('document.write(Gnextop.Boot.Buffer.Clean())',                                                   "Outputting buffer...");
+    
+    Gnextop.Boot.Cmd('document.write(renderFader())',                                                                 "Final touches...");
+    
+    Gnextop.Boot.Execute();
+    
+    
+    
+    // The following just keeps the scroll bar filling up while images load
+    loadProg = 0;
+    loadingProg();
+    function loadingProg() {
+      Gnextop.Boot.UpdateProg(1, true);
+      loadProg++;
+      if (loadProg < 40) {
+        setTimeout("loadingProg();", 120);
+      }
+    }
+    
+    //setInterval("UpdateClock();",60000);
+    
+    window.onload = function () {
+      var intTimeout = (Gnextop.UsingPSP) ? 2000 : 200;
+      setTimeout('loaded()', intTimeout)
+    }
+    
+    function loaded() {
+      //UpdateClock();
+      if (!Setting.GetSetting(true, 'Gnextop', 'LicenseAgreed', false)) {
+        // Start the setup maximized
+        Gnextop.Boot.Msg('Setting up for first use...');
+        Window.Open('apps/system/setup/setup.html', 2);
+        var wait = (Gnextop.UsingPSP) ? 3000 : 100
+      } else if(Setting.GetSetting(true,"Gnextop","autologin") == 1) {
+        var wait = (Gnextop.UsingPSP) ? 1000 : 20
+        setTimeout('CommonDialog.ShowMsg(false,"Beta software","This is a developer copy. Keep it within the BlazeByte Developer Forums.");', 1000);
+      } else {
+        Window.Open('apps/system/login/login.html', 2);
+        var wait = (Gnextop.UsingPSP) ? 1000 : 20
+        setTimeout('CommonDialog.ShowMsg(false,"Beta software","This is a developer copy. Keep it within the BlazeByte Developer Forums.");', 1000);
+      }
+      setTimeout('top.ShowScreen();fadein();', wait);
+    }
+    
+    function renderFader() {
+      html = '';
+      for (var i = 0; i < 1; i++) {
+        html += '<div class="fadein" id="fadein' + i + '"></div>';
+      }
+      return html;
+    }
+    
+    function fadein() {
+      // reduces the blocky screen update
+      for (i = 0; i < 1; i++) {
+        $('fadein' + i).style.visibility = 'hidden';
+      }
+    }
+  </script>
+</body>

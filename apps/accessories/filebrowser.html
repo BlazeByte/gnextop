@@ -1,0 +1,88 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<body>
+<style>
+th {
+  text-align:left;
+  background-color:#dddddd;
+  border-style:solid;
+  border-color:#999999;
+  border-width:0px 1px 1px 0px;
+  font-weight:normal;
+}
+</style>
+<table width="100%" style="background-color:#ffffff;" cellpadding="0" cellspacing="1">
+<tr><th>Name</th><th>Size</th><th>Type</th><th>Date</th><th>Options</th></tr>
+<script>
+var aFiles = Disk.Data.split(Disk.Char2);
+
+function lookupVar(strvar){
+  for ( var i = 0 ; i < variable.length ; i++ ) {
+    if(variable[i] == strvar){
+      return value[i];
+    }
+  }
+}
+
+function ConfirmRemoval(fileName) {
+	if(fileName == 'systemsettings') {
+		CommonDialog.ShowMsg (false, 'Gnextop', 'This is the Gnextop settings database. It contains system information and cannot be removed without formatting.');
+		return;
+	}
+	awesome = function() {
+		DoDelete(fileName);
+	};
+	CommonDialog.ShowMsg (true, 'Gnextop', 'Confirm deletion?', awesome, null);
+}
+
+function DoDelete(fileName) {
+	Disk.DeleteFile(fileName);
+	Reload()
+}
+
+function Reload() {
+  location=location.href;
+}
+
+function format(){
+  Disk.Clear()
+}
+
+for (var intFile = 0; intFile < aFiles.length-1; intFile++) {
+  var aFileParts = aFiles[intFile].split(Disk.Char1);
+  var vars = aFileParts[1].split(";");
+  
+  var variable = new Array();
+  var value = new Array();
+  
+  for ( var i = 0 ; i < vars.length-1 ; i++ ) {
+    var varparts = vars[i].split("=");
+    variable[value.length] = varparts[0];
+    value[value.length] = varparts[1];
+  }
+  
+  var fileDate = new Date()
+  fileDate.setTime(lookupVar("Date"));
+  document.write("<tr><td><a href='javascript:parent.Gnextop.LaunchHandler(\""+aFileParts[0]+"\", \""+lookupVar("Type")+"\", parent.Window);'>" + aFileParts[0] + "</a></td>"+
+                 "<td>" + (aFiles[intFile].length+1) + " bytes</td>" +
+                 "<td>"+lookupVar("Type")+"</td>" +
+                 "<td>"+fileDate.getDate()+"/"+fileDate.getMonth()+"/"+(fileDate.getYear()+1900)+"</td>" +
+                 "<td><a href='javascript:ConfirmRemoval(\""+aFileParts[0]+"\");'>Delete</a></td></tr> ");
+} 
+</script>
+</table>
+<p>
+<h2>Virtual Disk Status</h2>
+Used Memory: <script> document.write(Math.round((Disk.Data.length/1024)*100)/100); </script>KB<br>
+Sectors in use: <script> document.write(Disk.SectorCount); </script><br>
+Space Per Sector: <script> document.write(Math.round((Disk.SectorMax/1024)*100)/100); </script>KB<br>
+<a href="javascript:CommonDialog.ShowMsg(true,'Format disk?','Are you sure you wish format the virtual disk? This will clear all your files and settings!',format);">Format Virtual Disk</a>
+</p>
+</body>
+</html>
+
+<script>
+Me.Title = "File Browser";
+Me.Icon = "images/icons/menu/kfm.png";
+LoadingComplete();
+</script>

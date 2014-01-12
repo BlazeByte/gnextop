@@ -1,0 +1,112 @@
+<html>
+<head>
+  <meta http-equiv="CACHE-CONTROL" content="NO-CACHE">
+  <script>
+    var Gnextop = top.Gnextop;
+    var Head = top.Head;
+    var Disk = top.Disk;
+    var Setting = top.Setting;
+    var Base = top.Base;
+    var CommonDialog = top.CommonDialog;
+	Gnextop.UseStandardControls = true;
+    document.write(Head.LinkScripts("script/get.api.js","script/controls.api.js"));
+    document.write(Head.LinkStyles("../themes/" + Gnextop.ThemeDir + "/css/application.css","../themes/system/css/setup.css","../themes/" + Gnextop.ThemeDir + "/css/controls.css"));
+    document.write(Head.LinkScripts("script/setup.api.js"));
+  </script>
+</head>
+<body onLoad="Screen.Navigate(0);Gnextop.BootComplete();">
+<img id="SetupBG" src="../themes/system/images/setupbg.jpg"/>
+
+<!-- ***********************
+	      START SCREENS 
+     *********************** -->
+
+<div id='intro' class='screen'>
+  <div class="title">Welcome to Gnextop!</div>
+  <div class="step">Initial setup wizard</div>
+  <div class="content">
+    <p>Congratulations! Gnextop has been successfully installed. Before using Gnextop, some information is required. </p>
+    <p>Gnextop is a free product released under the GPL. Click next to view this license and continue the setup.</p>
+    <p>To begin, click Next. </p>
+  </div>
+</div>
+
+
+<div id='terms' class='screen'>
+  <div class="title">License Terms</div>
+  <div class="step">By clicking Next you agree to the new BSD (BSD 3) license explained below.</div>
+  <div class="content">
+    <iframe src="../docs/bsd3.html" height="150" style="width:100%;"></iframe>
+  </div>
+</div>
+
+
+<div id='user' class='screen'>
+  <div class="title">User Settings </div>
+  <div class="step">What is your name?</div>
+  <div class="content">
+    <p>Please enter a username and password (more users can be added later): </p>
+	<p>To <b>disable</b> multi-user support, leave this blank. Setup will disable access control, but note that a reinstallation is required if you change your mind.</p>
+    <table border="0"><tr><td height='25' valign='middle'>Username: </td><td valign='top'>
+    <script>document.write(Control.TextBox.CreateNew('ID=username','Style=width:200px;') + "</td></tr>"+
+            "<tr><td height='25' valign='middle'>Password:</td><td valign='top'>" + Control.PassBox.CreateNew('ID=password1','Style=width:200px;') + "</td></tr>" +
+            "<tr><td height='25' valign='middle'>Confirm Password:</td><td valign='top'>" + Control.PassBox.CreateNew('ID=password2','Style=width:200px;') + "</td></tr>");</script>
+    </table>
+  </div>
+</div>
+
+<div id='startup' class='screen'>
+  <div class="title">Gnextop start method</div>
+  <div class="step">Choose how you would like Gnextop to start</div>
+  <div class="content"><p>Gnextop can be started by setting it as the home page, setting it as a bookmark, or just by typing the URL every time you need to use it. It is recommended you set this as the home page or a bookmark.</p>
+  <p>To set this as a home page, click triangle now, go to <i>Tools</i> (the toolbox icon), click on <i>Settings</i>, <i>Home Page Settings</i>, and then click <i>Use Current Page</i>. Gnextop will now start everytime you use the browser!</p>
+  <p>To set Gnextop as a bookmark, click triangle now, click <i>Bookmarks</i> (the love heart icon), go to <i>My Bookmarks</i>, then click <i>[Add to Bookmarks]</i>. You will need to go to Bookmarks everytime you want to start Gnextop.</p></div>
+</div>
+
+
+<div id='finish' class='screen'>
+  <div class="title">A warning about your data</div>
+  <div class="step">Important information about your data!</div>
+  <div class="content"><p>Gnextop stores all your data on a "virtual disk". You don't need to worry what this is, you just need to know that it is all stored on the PSP's <i>Input History</i>. This means that pressing <i>Delete Input History</i> (in the PSP toolbar) will delete <b>all</b> your data made in Gnextop. You should frequently backup your data using the Backup feature.</p>
+  <p>
+  Please press Finish to complete the setup!
+  </p></div>
+</div>
+
+<div id="setupNav" align="center">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+      <td width="128" align="left">
+        <script>
+        document.write(Control.Button.CreateNew("ID=exit","onClick=CommonDialog.ShowMsg(true,'Exit?','Are you sure you wish to exit? Setup will begin again next time you start Gnextop.',Exit);","Value=Exit","Style=width:44px;") +
+                       Control.Button.CreateNew("ID=prev","onClick=Screen.Navigate(-1);","Value=Previous","Style=width:44px;"));
+        </script>
+      </td>
+      <td align="center">
+        Gnextop is a free product by BlazeByte.org.
+      </td>
+      <td width="128" align="right">
+        <script>
+        document.write(Control.Button.CreateNew("ID=next","onClick=Screen.Navigate(1);","Value=Next","Style=width:44px;") +
+                       Control.Button.CreateNew("ID=fin","onClick=Finish();","Value=Finish","Style=width:44px;"));
+        </script>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<div id="finished" class='screen'>
+  <div class="title">You're ready!</div>
+  <div class="step">Gnextop has been setup</div>
+  <div class="content"><p>In order to use Gnextop, you must restart. You can do this by pressing <i>Restart</i> below. Enjoy Gnextop!<p><br />
+  <script>
+        document.write("<div align='center'><a href='javascript:top.location=top.location.href;'><img src='../themes/" + Gnextop.ThemeDir + "/images/icons/64x64/restart.png' /></a></div>")
+  </script>
+</div>
+
+<script>
+
+</script>
+</body>
+</html>

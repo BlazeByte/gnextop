@@ -1,0 +1,326 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* Gnextop                                                    *
+* A PSP Portal by BlazeByte (http://blazebyte.org/gnextop)   *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+Window API
+==========
+
+This script controls the windows of Gnextop. A window is simple a <div> with an <iframe> in. The <iframe contains the 
+application, which is a separate HTML/Flash file.
+
+By default, there is a maximum of 3 windows. This is because every window must be written when Gnextop boot (as the PSP
+does not allow JavaScript to write new elements after the page has rendered), so the more windows written, the more memory 
+used and the longer it takes to boot.
+
+
+Functions:
+---------
+
+Window.Open (string URL) {
+- Opens an application (though it will not yet be visible to the user)
+- Displays a loading screen
+- Determines an empty window
+- Loads the application into the iframe of that window.
+- URL is the location of the application
+
+Window.Close (integer Window)
+- Closes a window
+- Window is the window to be close - current window if not set
+
+Window.Minimize (integer Window)
+- Minimizes a window
+- Window is the window to be minimized - current window if not set
+
+Window.Maximize (integer Window)
+- Maximizes a window
+- Window is the window to be maximized - current window if not set
+
+Window.Restore (integer Window)
+- Restores a window
+- Window is the window to be restored - current window if not set
+
+Window.SetTitle (integer Window, string Title)
+- Sets the title of a window
+- Window is the window to set the title of - current window if not set
+- Title what the title will be set to
+
+Window.SetIcon (integer Window,string Icon)
+- Sets the icon of a window
+- Window is the window to set the icon on - current window if not set
+- Icon is the URL of the image to use as the icon
+
+Window.WriteLoadingScreen ()
+- Creates the loading screen (called on boot)
+
+Window.WriteWindows (integer Amount)
+- Creates the windows (called on boot)
+- Amount is the amount of windows to create
+
+Window.WriteFullScreen ()
+- Creates the full screen window
+
+ReAlignTabs ()
+- Aligns the tabs in the taskbar
+
+Window.LoadApplicationAPI ()
+- Returns the API needed to run an application. Called from within an application.
+
+Window.LoadingComplete (integer Window)
+- Shows window when application has finished loading
+- Window is the window that has finished loading - current window if not set
+- Checks is internet is needed. If yes, display the net connection commondialog
+- Hides the loading screen
+
+Window.ShowLoadingScreen (string URL)
+- Shows the loading screen
+- URL is the URL to be displayed on the loading screen
+
+Window.HideLoadingScreen ()
+- Hide the loading screen
+
+WindowFrame (integer Window)
+- Returns the frame object of the window specified
+
+Window.Show (integer Window)
+- Shows the window
+- Window is the window to show
+
+Window.Hide (integer Window)
+- Hides the window
+- Window is the window to hide
+
+Window.ConnectNet (integer Window)
+- Shows the Connect common dialog if the application requires the net
+
+*/
+
+Gnextop.Boot.Msg('Preparing Window library...');
+Gnextop.Boot.UpdateProg(4, true);
+
+var Window = new Array();
+
+var WindowStatus = new Array();
+
+if (Gnextop.UsingPSP) {
+  var intMaxWindows = 3;
+} else {
+  var intMaxWindows = 10;
+}
+
+Window.Open = function (url, fullscreen) {
+  Window.ShowLoadingScreen(url);
+  Gnextop.CheckTheme();
+  Menu.Hide('all');
+  var intEmpty = -1;
+  for (var i = 0 ; i < intMaxWindows ; i++ ) {
+    if (Window[i].active == false){
+      intEmpty = i;
+      break;
+    }
+  }
+if (intEmpty == -1) {
+    CommonDialog.ShowMsg(false,"Window Limit","Only " + intMaxWindows + " windows can be open at one time. Please close a window in order open this application.");
+    Window.HideLoadingScreen();
+    return;
+  }
+
+if(url.slice(-3)=="swf") {
+    url = "apps/flashloader.html#url=" + url;
+  }
+  Window.CurrWindow = intEmpty;
+  Window[intEmpty].DisableRestore = false;
+  Window[intEmpty].StartFullscreen = false;
+  if (isset(fullscreen)) {
+    switch (fullscreen) {
+      case 2:
+        Window[intEmpty].DisableRestore = true;
+      case true:
+      case 1:
+        Window[intEmpty].StartFullscreen = true;
+        break;
+    }
+  }
+  WindowFrame(intEmpty).location = Gnextop.Root + url;
+}
+
+
+Window.Close = function (intWindow) {
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  Window.Hide(intWindow);
+  if(Window[intWindow].maximized == true) Window.Maximize(intWindow, false);
+  document.getElementById("windowTab"+intWindow).style.visibility = "hidden";
+  WindowFrame(intWindow).location = Gnextop.Root+"system/blank.html";
+  Window[intWindow].active = false;
+  ReAlignTabs();
+}
+
+Window.Minimize = function (intWindow) {
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  //if(Window[intWindow].maximized == true) Window.Maximize();
+  if (intWindow == -1) {
+    for (var intWindow = 0 ; intWindow < Window.length ; intWindow++){
+      Window.Minimize(intWindow);
+    }
+  }else {
+    if (!Window[intWindow].minimized) {
+      Window.Hide(intWindow);
+      Window[intWindow].minimized = true;
+    }
+  }
+}
+
+Window.Maximize = function (intWindow, blnShowWindow) {
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  if(!isset(blnShowWindow)) var blnShowWindow = true;
+  if(Window[intWindow].maximized == true) {
+    document.getElementById("windowMaxBG").style.visibility = 'hidden';
+    document.getElementById("rowWindowFrame"+intWindow).style.top = topBefore + 'px';
+    document.getElementById("rowWindowFrame" + intWindow).style.bottom = 0;
+    Window[intWindow].maximized = false;
+  } else {
+    topBefore = document.getElementById("rowWindowFrame"+intWindow).offsetTop;
+    if (Window[intWindow].DisableRestore) {
+      document.getElementById("rowWindowFrame" + intWindow).style.bottom = '-20px';
+    } else {
+      document.getElementById("rowWindowFrame" + intWindow).style.bottom = '-19px';
+      document.getElementById("windowMaxBG").style.visibility = 'visible';
+    }
+    document.getElementById("rowWindowFrame" + intWindow).style.top = 0;
+    
+    Window[intWindow].maximized = true;
+  }
+  if (blnShowWindow) Window.Show(intWindow);
+  Window[intWindow].minimized = false;
+}
+
+Window.Restore = function (intWindow) {
+  Menu.Hide('all');
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  Window.Minimize(-1);
+  Window.Show(intWindow);
+  Window[intWindow].minimized = false;
+  Window[intWindow].active = true;
+  Window.CurrWindow = intWindow;
+}
+Window.Toggle = function(intWindow){
+	Menu.Hide('all');
+	if( Window[intWindow].minimized == true) {
+		Window.Restore(intWindow);
+	}
+	else if(Window[intWindow].minimized == false) {
+		Window.Minimize(intWindow);
+	}
+	else {
+		//Core error! WTF?
+	}
+}
+Window.SetTitle = function (intWindow,strTitle) {
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  document.getElementById("divWindowTitle"+intWindow).innerHTML = strTitle;
+  document.getElementById("windowTabTitle"+intWindow).innerHTML = strTitle;
+}
+
+Window.SetIcon = function (intWindow,strIcon) {
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  document.getElementById("WindowIcon"+intWindow).src = "../themes/"+Gnextop.ThemeDir+"/" + strIcon;
+  document.getElementById("windowTabIcon"+intWindow).src = "../themes/"+Gnextop.ThemeDir+"/" + strIcon;
+}
+
+
+Window.WriteWindows = function () {
+  var html = '';
+  for (var i = 0 ; i < intMaxWindows ; i++) {
+    Window[i] = new Object();
+    Window[i].active = false;
+    Window[i].minimized = false;
+    html += '<div class="divWindow" id="divWindow' + i + '">' +
+              '<div class="rowWindowTitle">' +
+                '<img src="" id="WindowIcon' + i + '" class="WindowIcon" align="left" />' +
+                '<div id="divWindowTitle' + i + '" class="divWindowTitle">Window 1</div>' +
+                '<div id="divButtons" class="divButtons">' +
+                  '<a href="javascript:Window.Minimize('+i+');" class="min"></a>' +
+                  '<a href="javascript:Window.Maximize('+i+');" class="max"></a>' +
+                  '<a href="javascript:Window.Close('+i+');" class="close"></a>' +
+                '</div>' +
+              '</div>' +
+              '<div class="rowWindowFrame" id="rowWindowFrame' + i + '">' +
+                '<iframe src="'+Gnextop.Root+'system/blank.html" id="iWindow' + i + '" name="iWindow' + i + '"></iframe>' +
+              '</div>' +
+            '</div>';
+  }
+  html += '<div id="windowMaxBG" onclick="Window.Maximize()"></div>';
+  html += "<div id=\"LoadingScreenContainer\"><div id=\"LoadingScreen\"><div id=\"LoadingScreenTitle\"></div><br><br><div id=\"LoadingScreenURL\">http://</div></div></div>";
+  return html;
+}
+
+Window.WriteFullScreen = function () {
+  document.write("<div id='fullscreen'><iframe></iframe></div>");
+}
+
+function ReAlignTabs(){
+  var intLeft = 0;
+  for (var i = 0; i < Window.length; i++) {
+    if (Window[i].active==true) {
+      document.getElementById("windowTab"+i).style.left = intLeft + "px";
+      intLeft += 119;
+    }
+  }
+}
+
+Window.LoadApplicationAPI = function(){
+  return 
+          "<script src='"+Gnextop.Root+"system/script/application.api.js'></script>"+
+          "<script>Disk = parent.Disk; Setting = parent.Setting; Gnextop = parent.Gnextop; CommonDialog = parent.CommonDialog; Base = parent.Base; Control = parent.Control;</script>"+
+          "<link rel='stylesheet' href='"+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/controls.css' type='text/css'>"+
+          "<link rel='stylesheet' href='"+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/application.css' type='text/css'>";
+}
+
+Window.LoadingComplete = function (intWindow) {
+  if(!isset(intWindow)) var intWindow = Window.CurrWindow;
+  Window.SetTitle(intWindow,WindowFrame(intWindow).Me.Title);
+  Window.SetIcon(intWindow,WindowFrame(intWindow).Me.Icon);
+  document.getElementById("windowTab"+intWindow).style.visibility = 'visible';
+  ReAlignTabs();
+  Window.HideLoadingScreen();
+  if (WindowFrame(intWindow).Me.UseInternet) {    // If the aplication needs to use the internet
+    Window.ConnectNet(intWindow);                 // Show the connection dialog
+    return;
+  }
+  if (Window[intWindow].StartFullscreen) {
+    Window.Maximize(intWindow);
+  } else {
+    Window.Restore(intWindow);
+  }
+}
+
+Window.ShowLoadingScreen = function(strURL) {
+  document.getElementById("LoadingScreenURL").innerHTML = strURL;
+  document.getElementById("LoadingScreen").style.visibility = 'visible';
+}
+
+Window.HideLoadingScreen = function() {
+  document.getElementById("LoadingScreen").style.visibility = 'hidden';
+}
+
+function WindowFrame(intWindow){
+  return frames["iWindow"+intWindow];
+}
+
+Window.Show = function (intWindow) {
+  document.getElementById("divWindow"+intWindow).style.visibility = "visible";
+  Window.CurrWindow = intWindow;
+}
+
+Window.Hide = function (intWindow) {
+  document.getElementById("divWindow"+intWindow).style.visibility = "hidden";
+}
+
+Window.ConnectNet = function(intWindow) {
+  if(Gnextop.Connected)
+    Window.Restore(intWindow);
+  else {
+    Window.CurrWindow = intWindow;
+    CommonDialog.ShowConnect(Window.Restore,Window.Close);
+  }
+}

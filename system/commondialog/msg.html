@@ -1,0 +1,43 @@
+<script src='../script/controls.api.js'></script>
+<script>
+var Gnextop = top.Gnextop;
+var Head = Gnextop.iScreen.Head;
+var CommonDialog = Gnextop.iScreen.CommonDialog;
+
+document.write(Head.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/controls.css"));
+document.write(Head.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/application.css"));
+document.write(Head.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/window.css"));
+
+function OK() {
+  if(CommonDialog.CallAfter!=null)
+    CommonDialog.CallAfter();
+  Close();
+}
+
+function Cancel() {
+  if(CommonDialog.CallCancel==-1){
+    OK();
+    return;
+  }
+  if(CommonDialog.CallCancel!=null)
+    CommonDialog.CallCancel();
+  Close();
+}
+
+function Close() {
+  Gnextop.iScreen.document.getElementById('cdmsg').style.visibility='hidden';
+}
+</script>
+<style>
+body {background:transparent !important;}
+</style>
+<div class="divWindow borderedWindow" style="visibility:visible;height:98px;width:238px;">
+  <div class="divWindowTitle" style="padding-bottom:3px;" id="title">Message</div>
+  <div class="divButtons"></a><a href="javascript:Cancel();" class="divClose"></a></div>
+  <div id="msg" style="text-align:center;padding:12px 4px;">
+  Message
+  </div>
+  <script>document.write("<div id=\"setmsg\">" + Control.Button.CreateNew("Value=OK","onClick=OK();","Style=width:80px;position:absolute;left:73px;bottom:10px;") + "</div>" +
+                         "<div id=\"setconfirm\">" + Control.Button.CreateNew("Value=OK","onClick=OK();","Style=width:80px;position:absolute;left:22px;bottom:10px;") +
+                                                     Control.Button.CreateNew("Value=Cancel","onClick=Cancel();","Style=width:80px;position:absolute;left:122px;bottom:10px;") + "</div>");</script>
+</div>

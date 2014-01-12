@@ -1,0 +1,58 @@
+<script>
+document.write(parent.Window.LoadApplicationAPI());
+
+function filepath(e) {
+  // A no no with FireFox 3 (https://bugzilla.mozilla.org/show_bug.cgi?id=143220) ;(
+  if (e.value.indexOf('/') == -1) return prompt('Enter url of image');
+  return 'file://' + e.value;
+}
+
+function saveSettings() {
+  var path = filepath(document.getElementById("flBGImage"));
+  Setting.SaveSetting(false,"Gnextop","BGImage", path);
+  //CommonDialog.ShowMsg(false, "Gnextop", "Saved");
+  parent.document.getElementById("DesktopBG").src = path;
+  parent.Window.Close();
+}
+
+function showPreview(strUrl) {
+  document.getElementById("previewurl").innerHTML=strUrl;
+  document.getElementById("imgPreview").src=strUrl;
+}
+</script>
+<style>
+#imgPreviewFrame {
+  position:absolute;
+  left:119px;
+}
+
+#imgPreview {
+  position:absolute;
+  width:140px;
+  height:70px;
+  left:171px;
+  top:8px;
+}
+</style>
+<html>
+<body>
+<script>
+document.write("<img src='" + Gnextop.Root + "/themes/system/images/screenpreview.png' id='imgPreviewFrame' /><img id='imgPreview' src='" + Setting.GetSetting(false,"Gnextop","BGImage") + "' />");
+</script>
+<br />
+<table>
+<tr><td>Colour</td><td></td></tr>
+
+</table>
+<input type="file" id="flBGImage" onchange="showPreview(filepath(this));">
+<div id="previewurl">file://</div>
+<br />
+<script>document.write(Control.Button.CreateNew("Value=Save","onClick=saveSettings();","Style=width:80px;"));</script>
+</body>
+</html>
+
+<script>
+Me.Title = "Desktop Settings";
+Me.Icon = "images/icons/menu/desktop.png";
+LoadingComplete();
+</script>

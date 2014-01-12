@@ -1,0 +1,115 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+  <script>
+    
+    if(!Base.LoadBase("calendar","cal")) { // Load database. If it does not exist, then make it
+      Base.CreateBase("calendar");
+      Base.LoadBase("calendar","cal");
+      Base.CreateTable("cal","events","date,type,event");
+      Base.WriteBase("cal");
+    }
+    
+    var CalBase = Base["cal"];
+  </script>
+  <style>
+  #side {
+    position:absolute;
+    top:10px;
+    left:240px;
+    width:140px;
+    height:200px;
+  }
+    
+  #date {
+    float:left;
+    width:98px;
+    text-align:center;
+  }
+  #cal {
+    position:absolute;
+    left:1px;
+    top:26px;
+    height:168px;
+    width:224px;
+    border:0px;
+  }
+  
+  </style>
+  
+  <script>
+  var now = new Date;
+  var Months = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+  var Years = new Array();
+  for (intYear = 0; intYear < 5; intYear++)
+    Years[intYear] = now.getYear() - 2 + intYear;
+  
+  var selDay;
+  var selMonth;
+  var selYear;
+  var currMonth = now.getMonth();
+  var currYear = 2;
+  
+  function goDate(nav){
+    currYear = (currMonth+nav==-1) ? currYear - 1 : (currMonth+nav==12) ? currYear + 1 : currYear;
+    currMonth = (currMonth+nav==-1) ? 11 : (currMonth+nav==12) ? 0 : currMonth + nav;
+
+    frames["cal"].location = "calendarmonth.html";
+    document.getElementById("date").innerHTML = Months[currMonth]+" "+(Years[currYear]+1900);
+  }
+  
+  function selectDate(year,month,day){
+    if (month==-1) {
+      year--;
+      month=11;
+    }
+    if (month==12) {
+      year++;
+      month=0;
+    }
+    selDay = day;
+    selMonth = month;
+    selYear = year;
+    goDate(0);
+    document.getElementById("dateinfo").innerHTML = day + " " + Months[month] + " " + (1900 + Years[year]);
+    FoundRecord = Base.FindRecords("cal","events","date="+day+"-"+month+"-"+year);
+    if(FoundRecord.length==0) 
+      document.getElementById("notes").innerHTML = "(No notes)";
+    else {
+      var html="";
+      for(var intRecord = 0; intRecord < FoundRecord.length ; intRecord++)
+        html += CalBase.Table["events"].Field["event"].Record[FoundRecord[intRecord]].Value + ", " ;// + "<a href='javascript:Base.DeleteRecord(\"cal\",\"events\","+FoundRecord[intRecord]+");Base.WriteBase(\"cal\");'>X</a><br/>";
+      document.getElementById("notes").innerHTML = html;
+    }
+  }
+  
+  function newNote(){
+    note=prompt("type a note");
+    Base.CreateRecord("cal", "events", "date=" + selDay + "-" + selMonth + "-" + selYear + ",type=note,event=" + note);
+    Base.WriteBase("cal");
+  }
+  
+  </script>
+</head>
+<body>
+<script>
+ document.write(Control.Button.CreateNew("Value=&lt;","onClick=goDate(-1);","style=width:50px;") + 
+                "<div id='date'>"+Months[currMonth]+" "+(Years[currYear]+1900)+"</div>" +
+                Control.Button.CreateNew("Value=&gt;","onClick=goDate(1);","style=width:50px;"));
+</script><br/>
+<iframe id="cal" name="cal"></iframe>
+<div id="side">
+<div id="dateinfo">1 Jan 1990</div>
+<div id="notes">(No notes).</div><br/>
+<a href="javascript:newNote();">Click to add a note</a>
+</div>
+<script>
+setTimeout("selectDate(2,now.getMonth(),now.getDay()-1);",600)
+</script>
+</body>
+</html>
+<script>
+Me.Title = "Calendar";
+Me.Icon = "images/icons/menu/cal.png";
+LoadingComplete();
+</script>

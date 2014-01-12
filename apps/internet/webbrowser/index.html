@@ -1,0 +1,71 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<script>
+  if(!Base.LoadBase("webbrowser","web")) { // Load database. If it does not exist, then make it
+    Base.CreateBase("webbrowser");
+    Base.LoadBase("webbrowser","web");
+    Base.CreateTable("web","bookmarks","name,url");
+    Base.WriteBase("web");
+  }
+  
+  var WebBase = Base["web"];
+  function navGo(strArgs){
+    switch (strArgs){
+      case "reload":
+        frames['iContent'].location.reload();
+        break
+      case "home":
+        frames['iContent'].location.href='bookmarks.html';
+        break
+      case "go":
+        frames['iContent'].location.href=document.getElementById('address').value;
+        break
+      case "search":
+        document.getElementById('searchForm').q.value=document.getElementById('search').value;
+        document.getElementById('searchForm').submit();
+        break
+    }
+  }
+</script>
+</head>
+<body>
+<div class="toolbar" id="navBar" style="height: 20px;">
+  <table border="0" cellspacing="0" cellpadding="0"><tr>
+  <script>
+   document.write("<td><a href=\"javascript:history.go(-1);\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/apps/webbrowser/icons/back.png\" class=\"icon\" /></a>" +
+                  "<a href=\"javascript:history.go(1);\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/apps/webbrowser/icons/forward.png\" class=\"icon\" /></a>" +
+                  "<img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/sep.png\" class=\"sep\" />" +
+                  "<a href=\"javascript:navGo('reload');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/apps/webbrowser/icons/reload.png\" class=\"icon\" /></a>" +
+                  "<a href=\"javascript:navGo('home');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/apps/webbrowser/icons/home.png\" class=\"icon\" /></a>" +
+                  "<img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/sep.png\" class=\"sep\" /></td>" +
+                  "<td>" + Control.TextBox.CreateNew("ID=address","Value=http://","Style=width:180px;") + "</td>" +
+                  "<td><a href=\"javascript:navGo('go');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/apps/webbrowser/icons/go.png\" class=\"icon\" /></a></td>" +
+                  "<td>" + Control.TextBox.CreateNew("ID=search","Value=Click here to set.","Style=width:91px;") + "</td>" +
+                  "<td><a href=\"javascript:navGo('search');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/apps/webbrowser/icons/search.png\" class=\"icon\"></a></td>");
+  </script>
+  </tr></table>
+</div>
+<form method="get" action="http://google.com/xhtml/search" id="searchForm" target="iContent">
+  <input type="hidden" name="mrestrict" value="xhtml" />
+  <input type="hidden" name="q" maxlength="2048" />
+</form>
+<div id="Content"><iframe name="iContent" id="iContent" src="bookmarks.html" frameborder="0"></iframe></div>
+<script language="javascript" type="text/javascript">
+  var intEffectiveHeight = document.body.clientHeight-document.getElementById('navBar').offsetHeight;
+  document.getElementById('Content').style.height=intEffectiveHeight;
+  document.getElementById("iContent").style.height=intEffectiveHeight;
+  document.getElementById("iContent").style.width=document.getElementById('Content').offsetWidth;
+</script>
+</body>
+</html>
+<script>
+Me.Title = "Web Browser";
+Me.Icon = "images/icons/menu/browser.png";
+Me.UseInternet = true;
+LoadingComplete();
+if(GET('url')) {
+	document.getElementById('address').value = GET('url');
+	navGo('go');
+}
+</script>

@@ -1,0 +1,16 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<title>Run Application</title>
+</head>
+<body>
+Click 'Select' below to specify the image you want to view, then click Open.<br/><br/>
+<input type="file" name="file" style="width:200px" value="" /><br/>
+<script>document.write(Control.Button.CreateNew('Value=Open',"onClick=location.href='file:'+file.value",'Style=width:80px;'));</script>
+</body>
+</html>
+<script>
+Me.Title = "Image Viewer";
+Me.Icon = "images/icons/menu/imageviewer.png";
+LoadingComplete();
+</script>

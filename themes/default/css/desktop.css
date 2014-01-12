@@ -1,0 +1,81 @@
+#divDesktop {
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0px;
+  left:0px;
+}
+
+#divDesktop #DesktopVersion{
+  position:absolute;
+  bottom:22px;
+  height: 30px;
+  right:2px;
+  text-align:right;
+  color:#ffffff;
+  z-index: -1;
+}
+
+#DesktopBG {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+#divDesktopIcons {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+}
+
+.DesktopIcon {
+  position:absolute;
+  text-align:center;
+  width:60px;
+}
+
+.DesktopIconTextShadow {
+  position:absolute;
+  color:#000000;
+  width:100%;
+  left:1px;
+  top:49px;
+}
+
+.DesktopIconText {
+  position:absolute;
+  top:48px;
+  left:0px;
+  width:100%;
+  color:#ffffff;
+}
+
+.fadein {
+  position:absolute;
+  width:100%;
+  top:0px;
+  left:0px;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background: transparent url(../images/fade.png);
+}
+
+.widget {
+  position: absolute;
+  background: transparent url(../images/fade.png);
+}
+
+.widget .title {
+  background: transparent url(../images/fade.png);
+  font-weight: bold;
+  height: 18px;
+  color: #fff;
+  line-height: 18px;
+  padding: 0 4px;
+}

@@ -1,0 +1,69 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<script>
+var strfilename = null;
+
+function saveFileAs(){
+  strfilename = CommonDialog.Filename;
+  saveFile();
+}
+
+function saveFile() {
+  if(strfilename==null) 
+    CommonDialog.ShowFile(saveFileAs);
+  else
+    Disk.WriteFile(strfilename, "Type=Document;", document.getElementById("document").innerHTML);
+}
+
+function showLoad() {
+  CommonDialog.ShowFile(loadFile);
+}
+
+function loadFile() {
+  document.getElementById("document").innerHTML = Disk.LoadFile(CommonDialog.Filename);
+  strfilename = CommonDialog.Filename;
+}
+
+function newFile() {
+  if (confirmclose()) document.getElementById("document").innerHTML = "";
+}
+
+function exit() {
+  parent.Window.Close();
+}
+
+function tooltip(msg) {
+  document.getElementById("tooltip").innerHTML = msg;
+  setTimeout("if(document.getElementById(\"tooltip\").innerHTML == '" + msg + "') tooltip('')",2000)
+}
+</script>
+<body>
+  <div class="toolbar">
+    <script>
+    document.write("<a href=\"javascript:CommonDialog.ShowMsg(true,'Close current file?','Are you sure you wish to close the current file?',newFile);\" onmousemove=\"tooltip('New.');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/new.png\" class=\"icon\" /></a>" +
+                   "<a href=\"javascript:CommonDialog.ShowMsg(true,'Close current file?','Are you sure you wish to close the current file?',showLoad);\" onmousemove=\"tooltip('Open.');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/open.png\" class=\"icon\" /></a>" +
+                   "<img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/sep.png\" class=\"sep\" />" +
+                   "<a href=\"javascript:saveFile();\" onmousemove=\"tooltip('Save.');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/save.png\" class=\"icon\" /></a>" +
+                   "<a href=\"javascript:CommonDialog.ShowFile(saveFileAs);\" onmousemove=\"tooltip('Save as...');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/saveas.png\" class=\"icon\" /></a>" +
+                   "<img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/sep.png\" class=\"sep\" />" +
+                   "<a href=\"javascript:CommonDialog.ShowMsg(true,'Exit?','Are you sure you wish to exit?',exit);\" onmousemove=\"tooltip('Exit.');\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/close.png\" class=\"icon\" /></a>");
+    </script>
+  </div>
+  <script>
+    document.write(Control.TextArea.CreateNew("Style=width:474px; height:189px;","ID=document"));
+  </script>
+  <div class="statusbar">
+    <div id="tooltip">Text editor</div>
+  </div>
+</body>
+</html>
+
+<script>
+if(GET("file")!=null){
+  document.getElementById("document").innerHTML = Disk.LoadFile(GET("file"));
+}
+
+Me.Title = "Writer";
+Me.Icon = "images/icons/menu/word.png";
+LoadingComplete();
+</script>

@@ -1,0 +1,233 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<title>Maps</title>
+<script>
+var intLatitude = 0;
+var intLongitude = 0;
+var place = "Nowhere";
+var Zooms = Array(1800000,600000,180000,76800,38400,19200,9600,4800,2400,1200);
+var intZoom = 8;
+var blnPanel = false;
+
+if(!Base.LoadBase("maps","map")) { // Load database. If it does not exist, then make it
+  Base.CreateBase("maps");
+  Base.LoadBase("maps","map");
+  Base.CreateTable("map","bookmarks","place,long,lat");
+  Base.WriteBase("map");
+}
+
+function move(Lat, Long, Zm) {
+  intLatitude += Math.round(Lat * Zooms[intZoom] * 0.9);
+  intLongitude += Math.round(Long * Zooms[intZoom] * 1.5);
+  if((intZoom + Zm > 0)&&(intZoom + Zm < Zooms.length)) intZoom += Zm;
+  loadmap();
+}
+
+function loadmap() {
+  intLatitude = parseInt(intLatitude);
+  intLongitude = parseInt(intLongitude);
+  var intHeight = document.body.clientHeight;
+  var intWidth = document.body.clientWidth;
+  //alert(document.body.clientWidth);
+  //alert(top.frames['iscreen'].frames['iWindow0'].document.body.clientWidth);
+  //alert("http://maps.google.com/mapdata?latitude_e6=" + intLatitude + "&longitude_e6=" + intLongitude + "&zm=" + Zooms[intZoom] + "&w=" + intHeight + "&h=" + intWidth + "&cc=&min_priority=2");
+  document.getElementById("map").src="http://maps.google.com/mapdata?latitude_e6=" + intLatitude + "&longitude_e6=" + intLongitude + "&zm=" + Zooms[intZoom] + "&w=" + intWidth + "&h=" + intHeight + "&cc=&min_priority=2"; // zl=(1-12) also seems to zoom
+}
+
+function showMap() {
+  document.getElementById("map").style.visibility = 'visible';
+  document.getElementById("buttons").style.visibility = 'visible';
+}
+
+function convLat(Lat) {
+  if (Long < 0) Long += Math.pow(2,32); 
+  Long = Math.floor(Long);
+  return Lat
+}
+
+function convLong(Long){
+  Long = Long * 1000000; 
+  return Long
+}
+
+function getLocation() {
+  frames["buffer"].document.open();
+  frames["buffer"].document.write("<script src='http://www.blazebyte.org/gnextoppsp/maploc.php?location="+document.getElementById("location").value+"'><"+"/script>");
+  frames["buffer"].document.close();
+  hideSearch();
+}
+
+function showSearch() {
+  document.getElementById("search").style.visibility = 'visible';
+}
+
+function hideSearch() {
+  document.getElementById("search").style.visibility = 'hidden';
+  showMap();
+}
+
+function showPanel() {
+  blnPanel = !blnPanel;
+  document.getElementById("panel").style.visibility = blnPanel ? 'visible' : 'hidden';
+  document.getElementById("panelbuttontext").innerHTML = blnPanel ? '<' : '>';
+}
+
+function showBookmark() {
+  document.getElementById("placename").innerHTML = place;
+  document.getElementById("placename").value = place;
+  document.getElementById("bookmark").style.visibility = 'visible';
+}
+
+function hideBookmark() {
+  document.getElementById("bookmark").style.visibility = 'hidden';
+}
+
+function makeBookmark() {
+  Base.CreateRecord("map", "bookmarks", "place=" + Base.Escape(document.getElementById("placename").value) + ",long=" + intLongitude + ",lat=" + intLatitude);
+  Base.WriteBase("map");
+  hideBookmark();
+}
+
+</script>
+<style>
+body {
+  margin:0px;
+}
+
+#buttons {
+  visibility:hidden;
+  position:fixed;
+  top: 10px;
+  left: 10px;
+  width:60px;
+  height:120px;
+}
+
+#map {
+  visibility:hidden;
+}
+
+.button {
+  position:absolute;
+  display:block;
+  background-color:#ffffff;
+  border:1px solid #666666;
+  width:22px;
+  height:22px;
+  text-align:center;
+  color:#000000;
+  font-size:20px;
+  text-decoration:none;
+}
+
+#search, #bookmark {
+  position:absolute;
+  width:190px;
+  height:72px;
+  top:70px;
+  left:145px;
+  background-color:#ffffff;
+  border:1px solid #666666;
+}
+
+#bookmark {
+  visibility:hidden;
+}
+
+#buffer {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:0px;
+  height:0px;
+  visibility:hidden;
+}
+
+#panel {
+  position:absolute;
+  width:100%;
+  height:40px;
+  bottom:0px;
+  left:0px;
+  background-color:#ffffff;
+  border-top:1px solid #666666;
+  visibility:hidden;
+}
+
+#panelbutton {
+  position:absolute;
+  display:block;
+  background-color:#ffffff;
+  border:1px solid #666666;
+  border-width:1px 1px 0px 0px;
+  width:10px;
+  height:40px;
+  bottom:0px;
+  left:0px;
+  color:#000000;
+  text-decoration:none;
+}
+
+#panel1, #panel2 {
+  float:left;
+  width:200px;
+  padding:1px 1px 1px 12px;
+}
+
+#panel2 {
+  overflow:auto;
+  height:38px;
+}
+
+</style>
+<body>
+<img id="map" />
+<div id="buttons">
+  <a href="javascript:move(1,0,0);" class="button" style="left:15px;top:0px;">&#8679;</a>
+  <a href="javascript:move(0,-1,0);" class="button" style="left:0px;top:30px;">&#8678;</a>
+  <a href="javascript:move(0,1,0);" class="button" style="left:30px;top:30px;">&#8680;</a>
+  <a href="javascript:move(-1,0,0);" class="button" style="left:15px;top:60px;">&#8681;</a>
+  <a href="javascript:move(0,0,1);" class="button" style="left:15px;top:100px;">+</a>
+  <a href="javascript:move(0,0,-1);" class="button" style="left:15px;top:130px;">-</a>
+</div>
+<div id="panel">
+  <div id="panel1">
+    <a href="javascript:showSearch();">Lookup location</a><br />
+    <a href="javascript:showBookmark();">Bookmark location</a>
+  </div>
+  <div id="panel2">
+    <script>
+      var html = "";
+      for(var intRecord = 0; intRecord < Base["map"].Table["bookmarks"].RecordCount ; intRecord++)
+        html += "<a href='javascript:intLatitude = " + Base["map"].Table["bookmarks"].Field["lat"].Record[intRecord].Value + ";intLongitude = " + Base["map"].Table["bookmarks"].Field["long"].Record[intRecord].Value + ";loadmap();'>" + Base["map"].Table["bookmarks"].Field["place"].Record[intRecord].Value + "</a> " +
+                "<a href='javascript:Base.DeleteRecord(\"map\",\"bookmarks\","+intRecord+");Base.WriteBase(\"map\");'>X</a><br/>";
+      document.write(html);
+    </script>
+  </div>
+</div>
+<a href="javascript:showPanel();" id="panelbutton"><br /><div id="panelbuttontext">&gt;</div></a>
+<div id="search">
+  Type a city, address or zip/post code and click <i>Go</i>. (Works for all countries)<br/>
+  <script>document.write(Control.TextBox.CreateNew("ID=location","Value=London","Style=width:184px;") + "<br />" +
+  Control.Button.CreateNew("Value=Go","onClick=getLocation();","style=width:81px;") +
+  Control.Button.CreateNew("Value=Cancel","onClick=hideSearch();","style=width:81px;"));</script>
+  <br/><br/>
+</div>
+<div id="bookmark">
+  Enter a name for this location.<br/>
+  <script>document.write(Control.TextBox.CreateNew("ID=placename","Value=London","Style=width:184px;") + "<br />" +
+  Control.Button.CreateNew("Value=Bookmark","onClick=makeBookmark();","style=width:81px;") +
+  Control.Button.CreateNew("Value=Cancel","onClick=hideBookmark();","style=width:81px;"));</script>
+  <br/><br/>
+</div>
+<iframe id="buffer" name="buffer"></iframe>
+</body>
+</html>
+
+<script>
+Me.Title = "Maps";
+Me.Icon = "images/icons/menu/maps.png";
+Me.UseInternet = true;
+LoadingComplete();
+</script>

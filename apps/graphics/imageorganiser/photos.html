@@ -1,0 +1,38 @@
+<style>
+body {
+  margin:2px;
+}
+
+.thumbnail {
+  display:block;
+  float:left;
+  height:40px;
+  width:60px;
+  margin:4px;
+  text-align:center;
+  padding:2px;
+  overflow:hidden;
+}
+
+.title {
+  font-size:10px;
+}
+</style>
+<script>
+Imgs = parent.Imgs;
+
+function selectImage(id) {
+  document.getElementById("img"+parent.selimg).style.backgroundColor="transparent";
+  document.getElementById("img"+id).style.backgroundColor="#ccccee";
+  parent.selimg=id;
+}
+
+var html = "";
+for(var intRecord = 0; intRecord < top.Base["photo"].Table["photos"].RecordCount; intRecord++){
+  Imgs[intRecord] = new Object;
+  Imgs[intRecord].URL = top.Base["photo"].Table["photos"].Field["url"].Record[intRecord].Value;
+  Imgs[intRecord].Title = top.Base["photo"].Table["photos"].Field["title"].Record[intRecord].Value;
+  html+="<div id='img"+intRecord+"' class='thumbnail'><a href='javascript:;' onclick='selectImage("+intRecord+");'><img src='"+Imgs[intRecord].URL+"' width='40px' /><div class='title'>"+Imgs[intRecord].Title+"</div></a></div>";
+}
+document.write(html);
+</script>

@@ -1,0 +1,83 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<script>
+var strfilename = null;
+function newFile() {
+	setTextarea('');
+	strfilename = '';
+	setTooltip('Created new document.');
+}
+function openDialog() {
+	var openDlg = function() {
+		var open = CommonDialog.Filename;
+		openFile(open);
+	};
+	CommonDialog.ShowFile(openDlg, 'Open - Text Editor');
+}
+function openFile(strFilename) {
+	if(!Disk.FileExists(strFilename)) {
+		CommonDialog.ShowMsg(false, 'Text Editor', 'The file specified does not exist!');
+		return false;
+	}
+	strfilename = strFilename;
+	setTextarea(Disk.LoadFile(strFilename));
+	setTooltip('Loaded \''+strFilename+'\'.');
+}
+function saveFile() {
+	if(!strfilename) {
+		saveFileAs();
+		return;
+	}
+	Disk.WriteFile(strfilename, 'Type=Document;', Control.TextArea.GetValue(document.getElementById('document')), false);
+	setTooltip('Saved \''+strfilename+'\'.');
+}
+
+function saveFileAs() {
+	var saveDlg = function() {
+		strfilename = CommonDialog.Filename;
+		saveFile();
+	};
+	CommonDialog.ShowFile(saveDlg, 'Save - Text Editor');
+}
+
+function exit() {
+	parent.Window.Close();
+}
+
+function setTextarea(textString) {
+	Control.TextArea.SetValue(document.getElementById('document'), textString);
+}
+function setTooltip(tooltipMsg) {
+	document.getElementById('tooltip').innerHTML = tooltipMsg;
+}
+</script>
+<body>
+  <div class="toolbar">
+    <script>
+    document.write("<a href=\"javascript:CommonDialog.ShowMsg(true,'Close current file?','Are you sure you wish to close the current file?',newFile);\"\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/new.png\" class=\"icon\" /></a>" +
+                   "<a href=\"javascript:CommonDialog.ShowMsg(true,'Close current file?','Are you sure you wish to close the current file?',openDialog);\"\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/open.png\" class=\"icon\" /></a>" +
+                   "<img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/sep.png\" class=\"sep\" />" +
+                   "<a href=\"javascript:saveFile();\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/save.png\" class=\"icon\" /></a>" +
+                   "<a href=\"javascript:CommonDialog.saveFileAs;\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/saveas.png\" class=\"icon\" /></a>" +
+                   "<img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/sep.png\" class=\"sep\" />" +
+                   "<a href=\"javascript:CommonDialog.ShowMsg(true,'Exit?','Are you sure you wish to exit?',exit);\"><img src=\""+Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/images/icons/actions/close.png\" class=\"icon\" /></a>");
+    </script>
+  </div>
+  <script>
+    document.write(Control.TextArea.CreateNew("Style=width:474px; height:189px;","ID=document"));
+  </script>
+  <div class="statusbar">
+    <div id="tooltip">Text Editor Ready</div>
+  </div>
+</body>
+</html>
+
+<script>
+if(GET("file")!=null){
+  openFile(GET("file"));
+}
+
+Me.Title = "Text Editor";
+Me.Icon = "images/icons/menu/texteditor.png";
+LoadingComplete();
+</script>

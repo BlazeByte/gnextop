@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>Gnextop</title>
+  <script src="script/glib.js"></script>
+  <script>
+    function DiskReady() {
+      // Use a timeout to ensure virtual disk has loaded
+      setTimeout("frames['iscreen'].location='desktop.html'", 100);
+    }
+    function ShowScreen() {
+      $('screen').style.visibility = 'visible';
+    }
+  </script>
+  <link rel="stylesheet" href="screen.css" />
+  <script src="script/gnextop.api.js"></script>
+  <script src="script/versioninfo.js"></script>
+  <script src="script/disk.api.js"></script>
+  <script src="script/base.api.js"></script>
+  <script src="script/settings.api.js"></script>
+</head>
+<body bgcolor="#000000" text="#fffff" onclick="Gnextop.Boot.EnableMsgOutput()">
+  <div id="bootscreencont">
+    <div id="bootscreen">
+      <div id="bootprogbar"><div id="bootprog"></div></div>
+      <div id="bootmsg">&nbsp;</div>
+    </div>
+  </div>
+  <iframe id="vdisk" name="vdisk" src="disk.html"></iframe>
+  <div id="screen"><iframe name="iscreen" id="iscreen" frameborder="0" width="100%" height="100%" /></div>
+</body>
+</html>

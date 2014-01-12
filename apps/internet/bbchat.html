@@ -1,0 +1,144 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<title>PSP Chat</title>
+<script>
+var maxmessages = 40;
+var Message = new Array();
+var Colour = new Array("black","gray","silver","red","orange","yellow","lime","blue","aqua","fuchsia","purple","teal","maroon","navy", "green","olive");
+var prevlastmessage = 0;
+var lastmessage = null;
+var currColour = Setting.GetSetting(false,"BBChat","colour",Math.floor((Colour.length)*Math.random()));
+
+function selectColour (intColour) {
+  currColour = intColour;
+  document.getElementById("colourprev").style.backgroundColor = Colour[intColour];
+}
+
+function startChat() {
+  if (document.getElementById("nickname").value.length < 3) {
+    alert("Enter a nickname that is at least 3 characters");
+    return;
+  }
+  frames["icheck"].location="conn.html";
+  Setting.SaveSetting(false,"BBChat","name",document.getElementById("nickname").value);
+  Setting.SaveSetting(false,"BBChat","colour",currColour);
+  document.getElementById("name").value = document.getElementById("nickname").value;
+  document.getElementById("colour").value = currColour;
+  document.getElementById("chatscreen").style.visibility="visible";
+  document.getElementById("signinscreen").style.visibility="hidden";
+}
+
+function newMessage(strSender, intColour, strText) {
+  intMessage = Message.length;
+  Message[intMessage] = new Object();
+  Message[intMessage].Text = strText;
+  Message[intMessage].Colour = intColour;
+  Message[intMessage].Sender = strSender;
+  if (Message.length > maxmessages) Message.splice(0,1);
+}
+
+function writeChat() {
+  if(prevlastmessage==lastmessage) return
+  var strHTML = "<style>body{margin:1px;}.sender{display:inline;font-weight:bold;padding-right:3px;}.message{font-size:12px;}</style>";
+  for(var intMessage = 0; intMessage < Message.length; intMessage++){
+    strHTML += "<div class='message'><div class='sender' style='color:" + Colour[Message[intMessage].Colour] + ";'>" + Message[intMessage].Sender + ": </div>" + Message[intMessage].Text + "</div>";
+  }
+  frames["ichat"].document.write(strHTML);
+  frames["ichat"].document.close();
+  prevlastmessage=lastmessage;
+}
+
+function submitMessage() {
+  document.getElementById('message').value = document.getElementById('txtmessage').value;
+  document.getElementById('txtmessage').value='';
+  document.getElementById('txtmessage').innerHTML='';
+  document.formchat.submit();
+}
+
+setInterval("frames['ichat'].scroll(10000,10000)",500);
+</script>
+<style>
+#icheck, #isubmit {
+  position:absolute; 
+  top:0px;
+  right:0px;
+  width:0px;
+  height:0px;
+  visibility:hidden;
+}
+
+#signinscreen { padding:2px; }
+
+#signinscreen, #chatscreen {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:476px;
+  height:228px;
+  background-color:#eeeeee;
+}
+
+#colourprev {
+  width:100px;
+  height:20px;
+  border:1px solid #999999;
+  margin:1px;
+}
+</style>
+<body>
+<div id="signinscreen">
+<h1>PSP Chat</h1>
+Welcome to BlazeByte's PSP Chat, connecting you with other PSP users!<br />
+To begin, please enter a nickname, and select a colour:<br /><br />
+<table>
+<tr><td>Nickname:</td><td>
+<script>
+var strHTML = Control.TextBox.CreateNew("ID=nickname","Value="+Setting.GetSetting(false,"BBChat","name",""),"Style=width:184px;") + "<br/><br/></td></tr>";
+strHTML += "<tr><td>Name colour:</td><td><div id='colourprev' style='background-color:"+Colour[currColour]+";'></div></td></tr><tr><td colspan='2'>";
+for (var intColour = 0; intColour < Colour.length; intColour++) {
+  strHTML += Control.Button.CreateNew("Value=","onClick=selectColour('"+intColour+"');","style=width:14px;background-image:none;background-color:"+Colour[intColour]+";");
+}
+strHTML += "</td></tr></table>";
+strHTML += Control.Button.CreateNew("Value=Start chatting!","onClick=startChat();","style=width:80px;");
+strHTML += Control.Button.CreateNew("Value=Exit","onClick=parent.Window.Close();","style=width:80px;");
+document.write(strHTML);
+</script>
+<br/><br/>
+</div>
+
+
+<div id="chatscreen" style="visibility:hidden;">
+  <form name="formchat" action="http://www.blazebyte.org/gnextoppsp/chat/chat.php" method="post" target="isubmit">
+    <input id="message" type="hidden" value="" name="msg" />
+    <input id="name" type="hidden" value="" name="name" />
+    <input id="colour" type="hidden" value="" name="colour" />
+    
+    <table style="width:480px;height:228px;">
+      <tr>
+        <td colspan="2">
+          <iframe name="ichat" id="ichat" style="height:180px;width:472px;;border:1px solid #cccccc;background-color:#ffffff;">
+          </iframe>
+        </td>
+      </tr>
+      <tr>
+        <td height="30"><script>document.write(Control.TextBox.CreateNew("ID=txtmessage","Value=","Style=width:390px;top:0px;"));</script>
+        </td>
+        <td width="60">
+          <script>document.write(Control.Button.CreateNew("Value=Shout","onClick=submitMessage();","style=width:60px;"));</script>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <iframe name="icheck" id="icheck"></iframe>
+  <iframe name="isubmit" id="isubmit"></iframe>
+</div>
+</body>
+</html>
+
+<script>
+Me.Title = "PSP Chat";
+Me.Icon = "images/icons/menu/chat.png";
+Me.UseInternet = true;
+LoadingComplete();
+</script>

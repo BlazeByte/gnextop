@@ -1,0 +1,58 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+  <style>
+  .title {
+    font-size: 14px;
+    font-weight: bold;
+    }
+</style>
+
+</head>
+<body>
+  <script>
+function userpwrd(username, password){
+  if(username==''){
+  Setting.SaveSetting(true,"Gnextop","autologin",true);
+  Setting.SaveSetting(true,"Gnextop","autologinuser",'default');
+  parent.Window.Close();
+  }else{
+     if(password==document.getElementById('password2').value){
+       Base.CreateRecord ("sys", "users", "name="+username+",password="+password);
+       Setting.SaveSetting(true,"Gnextop","autologin",false);
+       Setting.SaveSetting(username,"Gnextop","Theme","default");       
+       parent.Window.Close();
+     }else{
+        CommonDialog.ShowMsg(false,"Inncorect Password","The passwords do no match please re-enter them.");
+     }
+  }
+  }
+</script>
+<script>
+var strHTML =
+  '<div class="title">Password Protection</div>' +
+  '<div class="step">What is your name?</div>' +
+  '<div class="content">' +
+  '<p>Please enter a username and password: </p>' +
+  '<p>To <b>disable</b> password protection, leave this blank.(Multiple users are not supported in this release).</p>' +
+            "Username:<br />" +
+            Control.TextBox.CreateNew('ID=username','Style=width:200px;') + 
+            "<br />" +
+	    "Password:<br/>" + 
+            Control.PassBox.CreateNew("ID=password","Style=position:absolute;width:200px;z-index:25;") +
+            "<br /><br />" +
+	    "Confirm Password:<br />" + 
+	    Control.PassBox.CreateNew('ID=password2','Style=width:200px;') + 
+            "<br /><br />"+
+	    Control.Button.CreateNew("ID=button_save","onClick=userpwrd(document.getElementById('username').value,document.getElementById('password').value)","Value=Save","Style=width:44px;z-index:30;");
+ document.write(strHTML);
+</script>
+
+  </div>
+</body>
+</html>
+<script>
+Me.Title = "User setup";
+Me.Icon = "images/icons/menu/pix.png";
+LoadingComplete();
+</script>

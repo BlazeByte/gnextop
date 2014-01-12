@@ -1,0 +1,44 @@
+*{
+  font-family: verdana, sans-serif;
+  font-size:10px;
+}
+
+img {
+  border:0;
+}
+
+body {
+  margin:0px;
+  background-color:#f2f2ff;
+  overflow:hidden;
+}
+
+.toolbar {
+  background-color:#eeeeff;
+  background-image:url(../images/button_bg.png);
+  background-repeat:x-repeat;
+  background-position:0% 50%;
+  border-bottom:1px solid #999999;
+  height:24px;
+}
+
+.toolbar .icon {
+  margin: 1px 2px 0px 2px
+}
+
+.toolbar .sep {
+  margin: 1px 4px 0px 4px;
+  display:inline;
+}
+
+.statusbar {
+  position:absolute;
+  width:100%;
+  bottom:0px;
+  height:13px;
+  border-top:1px solid #cccccc;
+}
+
+.statusbar .tooltip{
+  padding-left:2px;
+}

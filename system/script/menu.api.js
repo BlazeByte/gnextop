@@ -1,0 +1,252 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* Gnextop                                                    *
+* A PSP Portal by BlazeByte (http://blazebyte.org/gnextop)   *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+Menu API
+========
+
+This script creates and operated the menus.
+
+
+Functions:
+---------
+
+Menu.Show (string MenuID, integer X, integer Y, object Element, object Menu)
+- Shows a menu
+- MenuID is the menu to show
+- X is the X coordinate (in pixels) where the menu will appear. Alternativly, 'auto' may be used
+  to have the menu automatically positioned to the right of the element that called Menu.Show
+- Y is the Y coordinate. Again, this may be set to 'auto'.
+- [Only needed if 'auto' is used for X and/or Y] Element is the element that called Menu.Show (eg document.getElementById("button1"))
+- [Optional] Menu is the ID of the menu that the above element was in
+
+getAbsoluteTop (object Element)
+- Find the absolute Y position of specified lement
+
+Menu.Hide (string MenuID)
+- Hide a menu
+- MenuID is the menu to hide
+
+Menu.Write (string MenuID)
+- Write the menu (called on boot)
+- MenuID is the menu to write
+
+Menu.FixMenuSize ()
+- Correct the size of every menu
+
+Menu.DefineMenuItem (string MenuID, string Title, string Icon, string Action, string CSS)
+- Add a menu item to the array of menu items to be written on boot
+- MenuID is the menu that the item is pert of
+- Title is the title of the item
+- Icon is the image that will be displayed next to the title
+- Action is what will happen when the item is clicked
+- CSS is any specific CSS to apply to the item
+
+Menu.DefineMenu (string MenuID)
+- Add a menu to the array of menus to be written on boot
+- MenuID is the ID the menu will be reference by
+
+Menu.GetById (string MenuID)
+- Get a menu's element
+- MenuID is the menu to get the element of
+- Return error message if not found
+
+*/
+
+Gnextop.Boot.Msg('Preparing Menu library...');
+Gnextop.Boot.UpdateProg(4, true);
+
+var Menu = new Object();
+var Menu = new Array();
+Gnextop.MenuStatus = false;
+var strLastMenuOpened = "accessories";
+
+Menu.Toggle = function() {
+	if(Gnextop.MenuStatus == true) {
+		Menu.Hide('all');
+		Gnextop.MenuStatus = false;
+	}
+	else if(Gnextop.MenuStatus == false) {
+		Menu.Show('main',0,-20);
+		Gnextop.MenuStatus = true;
+		Window.Minimize(-1);
+	}
+	else {
+		//Core error! WTF?
+	}
+}
+
+Menu.Show = function (strMenu, x, y, element, menu) {
+  var CurrMenu = document.getElementById("divMenu" + Menu.GetById(strMenu));
+  
+  if ( x == "auto" )
+    CurrMenu.style.left = element.offsetLeft + element.offsetWidth + "px";
+  else {
+    if ( x < 0 ) CurrMenu.style.right = -x + "px";
+    else CurrMenu.style.left = x + "px";
+  }
+  
+  Gnextop.BrowserHeight = document.body.clientHeight;
+  
+  if ( y == "auto" ) {
+    intTop = getAbsoluteTop(element);   // get Y of element that triggered the menu 
+    if (intTop + CurrMenu.offsetHeight > Gnextop.BrowserHeight)
+      CurrMenu.style.top = (Gnextop.BrowserHeight - CurrMenu.offsetHeight) + "px";
+    else
+      CurrMenu.style.top = intTop + "px";
+  }else{
+    if ( y < 0 ) CurrMenu.style.top = (Gnextop.BrowserHeight + y - CurrMenu.offsetHeight) + "px";
+    else CurrMenu.style.top = y + "px";
+  }
+  CurrMenu.style.visibility = "visible";
+  
+  if(strLastMenuOpened != strMenu) {
+    if (menu!=strLastMenuOpened) Menu.Hide(strLastMenuOpened);
+    strLastMenuOpened = strMenu;
+  }
+}
+
+function getAbsoluteTop(element){
+  var totalY = 0;
+  while(element){
+    totalY += element.offsetTop;
+    element = element.offsetParent;
+  }
+  return totalY;
+}
+
+Menu.Hide = function (strMenu) {
+  if ( strMenu == "all" ) {
+	Gnextop.MenuStatus = false;
+    for(var i = 0 ; i < Menu.length ; i++){
+      document.getElementById("divMenu"+i).style.visibility="hidden";
+    }
+  }else{
+    document.getElementById("divMenu" + Menu.GetById(strMenu)).style.visibility="hidden";
+}
+}
+
+Menu.Write = function (strMenu) {
+  var html = '';
+  if (strMenu == 'all') {
+    for (var intMenu = 0 ; intMenu < Menu.length ; intMenu++){
+      html += Menu.Write(Menu[intMenu].ID);
+    }
+  }else {
+    var currMenu = Menu[Menu.GetById(strMenu)];
+    html = "<div id=\"divMenu" + currMenu.Index + "\" class=\"divMenu\" style=\"visibility:hidden;\">";
+
+    for(var intItem = 0 ; intItem < currMenu.Item.length ; intItem++){
+      html += "<a href=\"javascript:;\"><div class=\"menuitem\" style=\"" + currMenu.Item[intItem].CSS + "\"  onclick=\"";
+      if (currMenu.Item[intItem].Action.slice(0,9) != "Menu.Show") html += "Menu.Hide('all');";
+      html += currMenu.Item[intItem].Action + "\"><div style='float:left;'><img src=\"../themes/" + Gnextop.ThemeDir + "/" + currMenu.Item[intItem].Icon + "\" width='19' height='19' /></div><div class=\"menutext\">" + currMenu.Item[intItem].Title + "</div>";
+      if (currMenu.Item[intItem].Action.slice(0,9) == "Menu.Show") html += "<div class=\"menuarrow\"></div>";
+      html += "</div></a>";
+    }
+
+    html += "</div>\n";
+  }
+  return html;
+}
+
+Menu.FixMenuSize = function () {
+  for (var intMenu = 0 ; intMenu < Menu.length ; intMenu++){
+    var CurrMenu = document.getElementById("divMenu" + intMenu);
+    CurrMenu.style.height = CurrMenu.offsetHeight + "px";   // style.bottom will only work when the height is set correctly
+    CurrMenu.style.width = CurrMenu.offsetWidth + "px";     // same with style.width
+  }
+}
+
+Menu.DefineMenuItem = function (strMenu, strTitle, strIcon, strAction, strCss) {
+  var currMenu = Menu[Menu.GetById(strMenu)];
+  var intItem = currMenu.Item.length;
+  currMenu.Item[intItem] = new Object();
+  var currItem = currMenu.Item[intItem];
+  currItem.Title = strTitle;
+  currItem.Icon = strIcon;
+  currItem.Action = strAction;
+  currItem.CSS = (isset(strCss)) ? strCss : "";
+}
+
+Menu.DefineMenu = function (strID) {
+  var intMenu = Menu.length;
+  Menu[intMenu] = new Object();
+  Menu[intMenu].Item = new Object();
+  Menu[intMenu].Item = new Array();
+  Menu[intMenu].ID = strID;
+  Menu[intMenu].Index = intMenu;
+}
+
+Menu.GetById = function (strMenu) {
+  for (var intMenu = 0 ; intMenu < Menu.length ; intMenu++) {
+    if(Menu[intMenu].ID == strMenu) return intMenu;
+  }
+  return "Err: Specified menu does not exist";
+}
+
+Menu.DefineMenu("main");
+Menu.DefineMenuItem("main","Accessories","images/icons/menu/package_utilities.png","Menu.Show('accessories','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","Games","images/icons/menu/package_games.png","Menu.Show('games','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","Graphics","images/icons/menu/package_graphics.png","Menu.Show('graphics','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","Internet","images/icons/menu/package_network.png","Menu.Show('internet','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","Multimedia","images/icons/menu/package_multimedia.png","Menu.Show('multimedia','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","Office","images/icons/menu/package_office.png","Menu.Show('office','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","System","images/icons/menu/package_system.png","Menu.Show('system','auto','auto', this,'main');");
+Menu.DefineMenuItem("main","About","images/icons/menu/theme.png","Gnextop.About();");
+Menu.DefineMenuItem("main","Lock","images/icons/menu/exit.png","Window.Open('apps/system/login/login.html', 2);");
+
+Menu.DefineMenu("accessories");
+Menu.DefineMenuItem("accessories","Calculator","images/icons/menu/kcalc.png","Window.Open('apps/accessories/calculator.html');");
+Menu.DefineMenuItem("accessories","Calendar","images/icons/menu/cal.png","Window.Open('apps/accessories/calendar.html');");
+Menu.DefineMenuItem("accessories","Contacts","images/icons/menu/kaddressbook.png","Window.Open('apps/accessories/contacts.html');");
+Menu.DefineMenuItem("accessories","Conv. Calculator","images/icons/menu/business.png","Window.Open('apps/accessories/convcalc/index.html');");
+Menu.DefineMenuItem("accessories","File Browser","images/icons/menu/kfm.png","Window.Open('apps/accessories/filebrowser.html');");
+Menu.DefineMenuItem("accessories","Peroidic Table","images/icons/menu/kllckety.png","Window.Open('apps/accessories/periodictable.htm');");
+Menu.DefineMenuItem("accessories","Run Application","images/icons/menu/package_system.png","Window.Open('apps/accessories/runapplication.html');");
+Menu.DefineMenuItem("accessories","Terminal","images/icons/menu/konsole.png","Window.Open('apps/accessories/terminal.html');");
+Menu.DefineMenuItem("accessories","Text Editor","images/icons/menu/texteditor.png","Window.Open('apps/accessories/texteditor.html');");
+Menu.DefineMenuItem("accessories","Weather","images/icons/menu/kweather.png","Window.Open('apps/accessories/weather.html');");
+
+Menu.DefineMenu("games");
+Menu.DefineMenuItem("games","Chess","images/icons/menu/chess.png","Window.Open('apps/games/chess.swf');");
+Menu.DefineMenuItem("games","Connect 4","images/icons/menu/connect4.png","Window.Open('apps/games/connect4.swf');");
+Menu.DefineMenuItem("games","Minesweeper","images/icons/menu/mines.png","Window.Open('apps/games/minesweeper.swf');");
+Menu.DefineMenuItem("games","Moovlin Episode 1","images/icons/menu/moovlin.png","Window.Open('apps/games/moovlinep18.swf');");
+Menu.DefineMenuItem("games","Snake","images/icons/menu/snake.png","Window.Open('apps/games/snake.swf');");
+Menu.DefineMenuItem("games","Sudoku","images/icons/menu/sudoku.png","Window.Open('apps/games/sudoku.swf');");
+Menu.DefineMenuItem("games","Tetris","images/icons/menu/tetris.png","Window.Open('apps/games/tetris.swf');");
+Menu.DefineMenuItem("games","Tic Tac Toe","images/icons/menu/tictactoe.png","Window.Open('apps/games/tictactoe.swf');");
+
+Menu.DefineMenu("graphics");
+Menu.DefineMenuItem("graphics","Image Organiser","images/icons/menu/imageorganiser.png","Window.Open('apps/graphics/imageorganiser/index.html');");
+Menu.DefineMenuItem("graphics","Image Viewer","images/icons/menu/imageviewer.png","Window.Open('apps/graphics/imageviewer.html');");
+Menu.DefineMenuItem("graphics","Painter","images/icons/menu/paint.png","Window.Open('apps/graphics/paint.swf');");
+Menu.DefineMenuItem("graphics","PDF Viewer","images/icons/menu/pdf.png","Window.Open('apps/graphics/pspdf.html');");
+
+Menu.DefineMenu("internet");
+Menu.DefineMenuItem("internet","File Sharing","images/icons/menu/fileshare.png","Window.Open('apps/internet/fileshare.html');");
+Menu.DefineMenuItem("internet","Instant Messenger","images/icons/menu/im.png","Window.Open('apps/internet/messenger.html');");
+Menu.DefineMenuItem("internet","Maps","images/icons/menu/maps.png","Window.Open('apps/internet/maps.html');");
+Menu.DefineMenuItem("internet","PSP Chat","images/icons/menu/chat.png","Window.Open('apps/internet/bbchat.html');");
+Menu.DefineMenuItem("internet","PSP Community","images/icons/menu/community.png","Window.Open('apps/internet/webbrowser/index.html#url=http://www.blazebyte.org/community/');");
+Menu.DefineMenuItem("internet","Web Browser","images/icons/menu/browser.png","Window.Open('apps/internet/webbrowser/index.html');");
+Menu.DefineMenuItem("internet","Web Directory","images/icons/menu/directory.png","Window.Open('apps/internet/webdirectory.html');");
+
+Menu.DefineMenu("office");
+Menu.DefineMenuItem("office","Database","images/icons/menu/base.png","Window.Open('apps/office/database/index.html');");
+Menu.DefineMenuItem("office","Spreadsheet","images/icons/menu/spread.png","Window.Open('apps/office/spreadsheet/index.html');");
+Menu.DefineMenuItem("office","Word Processor","images/icons/menu/word.png","Window.Open('apps/office/writer/index.html');");
+
+Menu.DefineMenu("multimedia");
+Menu.DefineMenuItem("multimedia","Last.FM Portable","images/icons/menu/lastfm.gif","Window.Open('apps/internet/lastfm.html');");
+
+Menu.DefineMenu("system");
+Menu.DefineMenuItem("system","Clock","images/icons/menu/clock.png","Window.Open('apps/system/settings/clock.html');");
+Menu.DefineMenuItem("system","Desktop","images/icons/menu/desktop.png","Window.Open('apps/system/settings/desktop.html');");
+Menu.DefineMenuItem("system","Fix Frozen Pixels","images/icons/menu/pix.png","Window.Open('apps/system/fixpix.html');");
+Menu.DefineMenuItem("system","Keyboard","images/icons/menu/keyboard.png","Window.Open('apps/system/settings/keyboard.html');");
+Menu.DefineMenuItem("system","Report a Bug","images/icons/menu/bug.png","Window.Open('apps/system/bug.html');");
+Menu.DefineMenuItem("system","Theme","images/icons/menu/theme.png","Window.Open('apps/system/settings/theme.html');");
+Menu.DefineMenuItem("system","Update","images/icons/menu/update.png","Window.Open('apps/system/settings/update.html');");
+Menu.DefineMenuItem("system","Users","images/icons/menu/users.png","Window.Open('apps/system/settings/users.html');");

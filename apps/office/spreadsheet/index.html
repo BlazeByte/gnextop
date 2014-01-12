@@ -1,0 +1,66 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<script>
+var Spreadsheet = new Object();
+Spreadsheet.MaxCols = 10;
+Spreadsheet.MaxRows = 20;
+
+function saveFile(){
+  CommonDialog.ShowSave("Type=Spreadsheet;",document.getElementById("document").innerHTML);
+}
+
+function loadFile() {
+  CommonDialog.ShowOpen(document.getElementById("document"));
+}
+</script>
+<style>
+#sheet {
+  overflow:scroll;
+  width:100%;
+  height:200px;
+  position:relative;
+}
+
+th {
+  background-color:#999999;
+  border:1px solid #333333;
+}
+</style>
+<body>
+  <script>
+    document.write(Control.Button.CreateNew("Value=Save","onClick=saveFile();","Style=width:80px;") +
+                   Control.Button.CreateNew("Value=Load","onClick=loadFile();","Style=width:80px;"));
+  </script>Note: does not currently save or load
+  <br/>
+  <div id="sheet">
+    <table cellpadding="0" cellspacing="0">
+      <script>
+        var strHTML = "";
+        for(var row = 0; row <= Spreadsheet.MaxRows; row++ ){
+          strHTML += "<tr>";
+          for(var col = 0; col <= Spreadsheet.MaxCols; col++ ){
+            if(col==0) 
+              strHTML += "<th height='16'>" + row + "</th>";
+            else if(row==0) 
+              strHTML += "<th width='80'>" + col + "</th>";
+            else
+              strHTML += "<td>" + Control.TextBox.CreateNew("Style=width:80px; height:16px;","ID=CellX"+col+"Y"+row) + "</td>";
+          }
+          strHTML += "</tr>";
+        }
+        document.write(strHTML);
+      </script>
+    </table>
+  </div>
+</body>
+</html>
+
+<script>
+if(GET("file")!=null){
+  document.getElementById("document").innerHTML = Disk.LoadFile(GET("file"));
+}
+
+Me.Title = "Spreadsheet";
+Me.Icon = "images/icons/menu/spread.png";
+LoadingComplete();
+</script>

@@ -1,0 +1,49 @@
+body {
+  background-color:#75A2C6;
+  margin:0px;
+  text-align:center;
+}
+
+body .textbox{
+  background-color:#ffffff;
+  padding:1px;
+  border:1px solid #999999;
+  color:#000000;
+  text-decoration:none;
+  margin:1px;
+  width:462px;
+  height:20px;
+  text-align:left;
+  overflow:hidden;
+}
+
+.control_button{
+  background-image:none;
+  padding-top:1px;
+}
+
+
+.kbChar {
+  width:33px;
+  height:18px;
+  margin:1px;
+}
+
+#kbscreen {
+  width:468px;
+  margin: 0 auto;
+}
+
+#chars{
+  height:46px; 
+  overflow:scroll; 
+  width:100%;
+}
+
+#chars .control_button{
+  width:25px;
+}
+
+img {
+  border:0px;
+}

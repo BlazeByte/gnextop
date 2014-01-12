@@ -1,0 +1,142 @@
+<html>
+<head>
+<script>
+var Gnextop = top.Gnextop;
+var Head = top.Head;
+document.write(Head.LinkStyles("../../themes/"+Gnextop.ThemeDir+"/css/controls.css","../../themes/"+Gnextop.ThemeDir+"/css/kb.css"));
+document.write(Head.LinkScripts("kb.js","../script/controls.api.js"));
+Gnextop.ReturnLoading(" Done. @nln Creating Virtual Keyboard...");
+</script>
+</head>
+
+<body onload="Gnextop.ReturnLoading('Done');">
+  <div id="kbscreen">
+    <br/>
+    <pre><div id="inputbox" class="textbox">|</div></pre>
+    
+    <script>document.write(Control.Button.CreateNew("Style=width:90px;","onClick=kbType(0,'clear');","Value=Clear"));</script>
+    <div style="float:left;width:40px;display:inline;">&nbsp;</div>
+    <script>document.write(Control.Button.CreateNew("onClick=moveCursor(intCurrX-1);","Value=<img src='bk_arrow.png' />") +
+                           Control.Button.CreateNew("onClick=moveCursor(intCurrX+1);","Value=<img src='fwd_arrow.png' />"));
+    </script>
+    <div style="float:left;width:40px;display:inline;">&nbsp;</div>
+    <script>
+    document.write(Control.Button.CreateNew("Style=width:90px;","onClick=doExit();","Value=Cancel") +
+                   Control.Button.CreateNew("Style=width:90px;","onClick=doOk();","Value=OK"));
+    </script>
+    <br/>
+    <form id="keyboard" name="keyboard">
+      <script>
+      document.write("" +
+      Control.Button.CreateNew("onClick=kbType('1');","Value=1") +
+      Control.Button.CreateNew("onClick=kbType('2');","Value=2") +
+      Control.Button.CreateNew("onClick=kbType('3');","Value=3") +
+      Control.Button.CreateNew("onClick=kbType('4');","Value=4") +
+      Control.Button.CreateNew("onClick=kbType('5');","Value=5") +
+      Control.Button.CreateNew("onClick=kbType('6');","Value=6") +
+      Control.Button.CreateNew("onClick=kbType('7');","Value=7") +
+      Control.Button.CreateNew("onClick=kbType('8');","Value=8") +
+      Control.Button.CreateNew("onClick=kbType('9');","Value=9") +
+      Control.Button.CreateNew("onClick=kbType('0');","Value=0") +
+      Control.Button.CreateNew("onClick=kbType(0,'bkspace');","Style=width:74px;","Value=<img src='bkspc_arrow.png' />") +
+      "<br/>" +
+      "<div id=\"caseAffectedKeys\">" +
+        Control.Button.CreateNew("onClick=kbType('&'+'#09;');","Style=width:36px;","Value=Tab") +
+        Control.Button.CreateNew("name=key","onClick=kbType('q');","Value=q") +
+        Control.Button.CreateNew("name=key","onClick=kbType('w');","Value=w") +
+        Control.Button.CreateNew("name=key","onClick=kbType('e');","Value=e") +
+        Control.Button.CreateNew("name=key","onClick=kbType('r');","Value=r") +
+        Control.Button.CreateNew("name=key","onClick=kbType('t');","Value=t") +
+        Control.Button.CreateNew("name=key","onClick=kbType('y');","Value=y") +
+        Control.Button.CreateNew("name=key","onClick=kbType('u');","Value=u") +
+        Control.Button.CreateNew("name=key","onClick=kbType('i');","Value=i") +
+        Control.Button.CreateNew("name=key","onClick=kbType('o');","Value=o") +
+        Control.Button.CreateNew("name=key","onClick=kbType('p');","Value=p") +
+        Control.Button.CreateNew("onClick=kbType(0,'return');","class=kbChar button","Style=height:40px;float:right;","Value=<img src='return_arrow.png' />") +
+        Control.Button.CreateNew("id=caps","onClick=capslock();","Style=width:59px;","Value=caps") +
+        Control.Button.CreateNew("name=key","onClick=kbType('a');","Value=a") +
+        Control.Button.CreateNew("name=key","onClick=kbType('s');","Value=s") +
+        Control.Button.CreateNew("name=key","onClick=kbType('d');","Value=d") +
+        Control.Button.CreateNew("name=key","onClick=kbType('f');","Value=f") +
+        Control.Button.CreateNew("name=key","onClick=kbType('g');","Value=g") +
+        Control.Button.CreateNew("name=key","onClick=kbType('h');","Value=h") +
+        Control.Button.CreateNew("name=key","onClick=kbType('j');","Value=j") +
+        Control.Button.CreateNew("name=key","onClick=kbType('k');","Value=k") +
+        Control.Button.CreateNew("name=key","onClick=kbType('l');","Value=l") +
+        "<br/>" +
+        Control.Button.CreateNew("id=shift1","name=shift","onClick=doShift();","Style=width:80px;","Value=SHIFT") +
+        Control.Button.CreateNew("name=key","onClick=kbType('z');","Value=z") +
+        Control.Button.CreateNew("name=key","onClick=kbType('x');","Value=x") +
+        Control.Button.CreateNew("name=key","onClick=kbType('c');","Value=c") +
+        Control.Button.CreateNew("name=key","onClick=kbType('v');","Value=v") +
+        Control.Button.CreateNew("name=key","onClick=kbType('b');","Value=b") +
+        Control.Button.CreateNew("name=key","onClick=kbType('n');","Value=n") +
+        Control.Button.CreateNew("name=key","onClick=kbType('m');","Value=m") +
+        Control.Button.CreateNew("id=shift2","name=shift","onClick=doShift();","Style=width:94px;","Value=SHIFT") +
+      "</div>" +
+      "<br/>" +
+      Control.Button.CreateNew("Style=width:41px;","onClick=kbType('http://');","Value=http://") +
+      Control.Button.CreateNew("onClick=kbType('www.');","Style=width:38px;","Value=www.") +
+      Control.Button.CreateNew("Style=width:152px;","onClick=kbType(String.fromCharCode(160));","Value=&nbsp;") +
+      Control.Button.CreateNew("onClick=kbType('.');","Value=.") +
+      Control.Button.CreateNew("onClick=kbType('/');","Value=/") +
+      Control.Button.CreateNew("onClick=kbType('.com');","Value=.com") +
+      Control.Button.CreateNew("onClick=kbType('.net');","Value=.net") +
+      Control.Button.CreateNew("onClick=kbType('.org');","Value=.org") +
+      "<br/><br/>" +
+      "<div id=\"chars\">" +
+        Control.Button.CreateNew("onClick=kbType('.');","Value=.") +
+        Control.Button.CreateNew("onClick=kbType(',');","Value=,") +
+        Control.Button.CreateNew("onClick=kbType(''');","Value='") +
+        Control.Button.CreateNew("onClick=kbType('?');","Value=?") +
+        Control.Button.CreateNew("onClick=kbType('!');","Value=!") +
+        Control.Button.CreateNew("onClick=kbType('&quot;');","Value=&quot;") +
+        Control.Button.CreateNew("onClick=kbType('-');","Value=-") +
+        Control.Button.CreateNew("onClick=kbType('(');","Value=(") +
+        Control.Button.CreateNew("onClick=kbType(')');","Value=)") +
+        Control.Button.CreateNew("onClick=kbType('@');","Value=@") +
+        Control.Button.CreateNew("onClick=kbType('/');","Value=/") +
+        Control.Button.CreateNew("onClick=kbType(':');","Value=:") +
+        "<br/>" +
+        Control.Button.CreateNew("onClick=kbType('_');","Value=_") +
+        Control.Button.CreateNew("onClick=kbType(';');","Value=;") +
+        Control.Button.CreateNew("onClick=kbType('+');","Value=+") +
+        Control.Button.CreateNew("onClick=kbType('&amp;');","Value=&amp;") +
+        Control.Button.CreateNew("onClick=kbType('%');","Value=%") +
+        Control.Button.CreateNew("onClick=kbType('*');","Value=*") +
+        Control.Button.CreateNew("onClick=kbType('=');","Value==") +
+        Control.Button.CreateNew("onClick=kbType('&lt;');","Value=&lt;") +
+        Control.Button.CreateNew("onClick=kbType('&gt;');","Value=&gt;") +
+        Control.Button.CreateNew("onClick=kbType('&pound;');","Value=&pound;") +
+        Control.Button.CreateNew("onClick=kbType('&euro;');","Value=&euro;") +
+        Control.Button.CreateNew("onClick=kbType('$');","Value=$") +
+        "<br/>" +
+        Control.Button.CreateNew("onClick=kbType('&yen;');","Value=&yen;") +
+        Control.Button.CreateNew("onClick=kbType('[');","Value=[") +
+        Control.Button.CreateNew("onClick=kbType(']');","Value=]") +
+        Control.Button.CreateNew("onClick=kbType('{');","Value={") +
+        Control.Button.CreateNew("onClick=kbType('}');","Value=}") +
+        Control.Button.CreateNew("onClick=kbType('\\\\');","Value=\\\\") +
+        Control.Button.CreateNew("onClick=kbType('~');","Value=~") +
+        Control.Button.CreateNew("onClick=kbType('^');","Value=^") +
+        Control.Button.CreateNew("onClick=kbType('#');","Value=#") +
+        Control.Button.CreateNew("onClick=kbType('|');","Value=|") +
+        Control.Button.CreateNew("onClick=kbType('.net');","Value=.net") +
+        Control.Button.CreateNew("onClick=kbType('.org');","Value=.org"));
+        "<br/>" +
+      "</div>"
+    </script>
+    <div id="info">
+        <div id="kbStatus">Keyboard Active</div>
+    </div>
+    <script>
+    var intCurrX = document.getElementById('inputbox').innerHTML.length-1;
+    var navlock = 0;
+    var blnSettingup = true;
+    pauseKbCursorBlink();
+    </script>
+
+    <!--iframe src="kbcontrolstart.html" Style="visibility:hidden; height:0px;"></iframe-->
+  </div>
+</body>
+</html>

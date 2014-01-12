@@ -1,0 +1,11 @@
+<script>
+if (parent.navlock<5){
+  location = "kbback.html";
+  parent.navlock++;
+} else if(parent.blnSettingup)
+  location = "kbcontrol.html";
+else {
+  parent.moveCursor(parent.intCurrX-1);
+  history.go(1);
+}
+</script>

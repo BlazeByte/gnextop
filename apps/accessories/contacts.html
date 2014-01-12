@@ -1,0 +1,203 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+  <script>
+    
+    if(!Base.LoadBase("contacts","cts")) { // Load database. If it does not exist, then make it
+      Base.CreateBase("contacts");
+      Base.LoadBase("contacts","cts");
+      Base.CreateTable("cts","contacts","name,number1,number2,email1,email2,address1,address2,address3,www");
+      Base.WriteBase("cts");
+    }
+    
+    var CtsBase = Base["cts"];
+  </script>
+  <style>
+  #cscreen, #cedit {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+  }
+  
+  #cinfo {
+    position:absolute;
+    left:140px;
+    top:2px;
+    width:320px;
+  }
+
+  #names {
+    position:absolute;
+    left:2px;
+    top:2px;
+    height:168px;
+    width:124px;
+    border:1px solid #cccccc;
+  }
+
+  #cname {
+    font-size:16px;
+    padding:3px;
+  }
+  
+  th {
+    text-align:left;
+  }
+  </style>
+  
+  <script>
+  var currContact = 0;
+
+  function saveContact(){
+    closeEdit();
+    if(currContact==null)
+      Base.CreateRecord("cts", "contacts", "name=" + document.getElementById("ename").value + 
+                                          ",number1=" + document.getElementById("eno1").value +
+                                          ",number2=" + document.getElementById("eno2").value +
+                                          ",email1=" + document.getElementById("ee1").value +
+                                          ",email2=" + document.getElementById("ee2").value +
+                                          ",address1=" + document.getElementById("eadd1").value +
+                                          ",address2=" + document.getElementById("eadd2").value +
+                                          ",address3=" + document.getElementById("eadd3").value +
+                                          ",www=" + document.getElementById("esite").value);
+    else {
+      Base["cts"].Table["contacts"].Field["name"].Record[currContact].Value=document.getElementById("ename").value;
+      Base["cts"].Table["contacts"].Field["number1"].Record[currContact].Value=document.getElementById("eno1").value;
+      Base["cts"].Table["contacts"].Field["number2"].Record[currContact].Value=document.getElementById("eno2").value;
+      Base["cts"].Table["contacts"].Field["email1"].Record[currContact].Value=document.getElementById("ee1").value;
+      Base["cts"].Table["contacts"].Field["email2"].Record[currContact].Value=document.getElementById("ee2").value;
+      Base["cts"].Table["contacts"].Field["address1"].Record[currContact].Value=document.getElementById("eadd1").value;
+      Base["cts"].Table["contacts"].Field["address2"].Record[currContact].Value=document.getElementById("eadd2").value;
+      Base["cts"].Table["contacts"].Field["address3"].Record[currContact].Value=document.getElementById("eadd3").value;
+      Base["cts"].Table["contacts"].Field["www"].Record[currContact].Value=document.getElementById("esite").value;
+    }
+    
+    Base.WriteBase("cts");
+  }
+  
+  
+  function showEdit(contact) {
+    currContact = contact;
+    if (contact==null) {
+      document.getElementById("ename").innerHTML = "";
+      document.getElementById("ename").value = "";
+      document.getElementById("eno1").innerHTML = "";
+      document.getElementById("eno1").value = "";
+      document.getElementById("eno2").innerHTML = "";
+      document.getElementById("eno2").value = "";
+      document.getElementById("ee1").innerHTML = "";
+      document.getElementById("ee1").value = "";
+      document.getElementById("ee2").innerHTML = "";
+      document.getElementById("ee2").value = "";
+      document.getElementById("eadd1").innerHTML = "";
+      document.getElementById("eadd1").value = "";
+      document.getElementById("eadd2").innerHTML = "";
+      document.getElementById("eadd2").value = "";
+      document.getElementById("eadd3").innerHTML = "";
+      document.getElementById("eadd3").value = "";
+      document.getElementById("esite").innerHTML = "";
+      document.getElementById("esite").value = "";
+    }
+    document.getElementById("cedit").style.visibility = "visible";
+    document.getElementById("cscreen").style.visibility = "hidden";
+  }
+  
+  function closeEdit(){
+    location.reload();
+  }
+  
+  function showContact(contact) {
+    currContact = contact;
+    document.getElementById("cname").innerHTML = CtsBase.Table["contacts"].Field["name"].Record[contact].Value;
+    document.getElementById("cno1").innerHTML = CtsBase.Table["contacts"].Field["number1"].Record[contact].Value;
+    document.getElementById("cno2").innerHTML = CtsBase.Table["contacts"].Field["number2"].Record[contact].Value;
+    document.getElementById("ce1").innerHTML = CtsBase.Table["contacts"].Field["email1"].Record[contact].Value;
+    document.getElementById("ce2").innerHTML = CtsBase.Table["contacts"].Field["email2"].Record[contact].Value;
+    document.getElementById("cadd1").innerHTML = CtsBase.Table["contacts"].Field["address1"].Record[contact].Value;
+    document.getElementById("cadd2").innerHTML = CtsBase.Table["contacts"].Field["address2"].Record[contact].Value;
+    document.getElementById("cadd3").innerHTML = CtsBase.Table["contacts"].Field["address3"].Record[contact].Value;
+    document.getElementById("csite").innerHTML = CtsBase.Table["contacts"].Field["www"].Record[contact].Value;
+    document.getElementById("ename").innerHTML = CtsBase.Table["contacts"].Field["name"].Record[contact].Value;
+    document.getElementById("ename").value = CtsBase.Table["contacts"].Field["name"].Record[contact].Value;
+    document.getElementById("eno1").innerHTML = CtsBase.Table["contacts"].Field["number1"].Record[contact].Value;
+    document.getElementById("eno1").value = CtsBase.Table["contacts"].Field["number2"].Record[contact].Value;
+    document.getElementById("eno2").innerHTML = CtsBase.Table["contacts"].Field["number2"].Record[contact].Value;
+    document.getElementById("eno2").value = CtsBase.Table["contacts"].Field["number2"].Record[contact].Value;
+    document.getElementById("ee1").innerHTML = CtsBase.Table["contacts"].Field["email1"].Record[contact].Value;
+    document.getElementById("ee1").value = CtsBase.Table["contacts"].Field["email1"].Record[contact].Value;
+    document.getElementById("ee2").innerHTML = CtsBase.Table["contacts"].Field["email2"].Record[contact].Value;
+    document.getElementById("ee2").value = CtsBase.Table["contacts"].Field["email2"].Record[contact].Value;
+    document.getElementById("eadd1").innerHTML = CtsBase.Table["contacts"].Field["address1"].Record[contact].Value;
+    document.getElementById("eadd1").value = CtsBase.Table["contacts"].Field["address1"].Record[contact].Value;
+    document.getElementById("eadd2").innerHTML = CtsBase.Table["contacts"].Field["address2"].Record[contact].Value;
+    document.getElementById("eadd2").value = CtsBase.Table["contacts"].Field["address2"].Record[contact].Value;
+    document.getElementById("eadd3").innerHTML = CtsBase.Table["contacts"].Field["address3"].Record[contact].Value;
+    document.getElementById("eadd3").value = CtsBase.Table["contacts"].Field["address3"].Record[contact].Value;
+    document.getElementById("esite").innerHTML = CtsBase.Table["contacts"].Field["www"].Record[contact].Value;
+    document.getElementById("esite").value = CtsBase.Table["contacts"].Field["www"].Record[contact].Value;
+  }
+  
+  function deleteContact() {
+    Base.DeleteRecord("cts","contacts",currContact);
+    Base.WriteBase("cts");
+    location.reload();
+  }
+  </script>
+</head>
+<body>
+<div id="cscreen">
+  <div id="names" class="control_list">
+    <div class="title">Names</div>
+    <script>
+      var html="";
+      var intItem = 1;
+      for(var intRecord = 0; intRecord < CtsBase.Table["contacts"].RecordCount ; intRecord++) {
+        html += "<a class='item"+intItem+"' href='javascript:showContact("+intRecord+");'>" + CtsBase.Table["contacts"].Field["name"].Record[intRecord].Value + "</a>"
+        intItem = (intItem==1) ? 2 : 1;
+      }
+      html += "<a href='javascript:;' onclick='showEdit(null);' class='item"+intItem+"'>New contact</a>";
+      document.write(html);
+    </script>
+  </div>
+  <div id="cinfo">
+    <div id='cname'>Name</div>
+    <table width="100%">
+      <tr><th width="60">Number 1</th><td><div id="cno1">Number 1</div></td></tr>
+      <tr><th>Number 2</th><td><div id="cno2">Number 2</div></td></tr>
+      <tr><th>Email 1</th><td><div id="ce1">Email 1</div></td></tr>
+      <tr><th>Email 2</th><td><div id="ce2">Email 2</div></td></tr>
+      <tr><th valign="top">Address</td><td><div id="cadd1">Address 1</div><div id="cadd2">Address 2</div><div id="cadd3">Address 3</div></td></tr>
+      <tr><th>Website</th><td><div id="csite">Site</div></td></tr>
+    </table>
+    <script>document.write(Control.Button.CreateNew("Value=Edit","onClick=showEdit(currContact);","style=width:81px;") +
+                           Control.Button.CreateNew("Value=Delete","onClick=CommonDialog.ShowMsg(true,'Delete contact?','Are you sure you wish to delete this contact?',deleteContact);","style=width:81px;"));</script>
+  </div>
+</div>
+<div id="cedit" style="visibility:hidden;">
+  <div style="font-size:16px; padding:2px;">Add Contact</div>
+  <table>
+    <tr><th width="110">Name</th><td colspan="3"><script>document.write(Control.TextBox.CreateNew("ID=ename","Style=width:150px;"));</script></td></tr>
+    <tr><th>Number 1</th><td width="150"><script>document.write(Control.TextBox.CreateNew("ID=eno1","Style=width:150px;"));</script></td>
+        <th width="110">Number 2</th><td width="150"><script>document.write(Control.TextBox.CreateNew("ID=eno2","Style=width:150px;"));</script></td></tr>
+    <tr><th>Email 1</th><td><script>document.write(Control.TextBox.CreateNew("ID=ee1","Style=width:150px;"));</script></td>
+        <th>Email 2</th><td><script>document.write(Control.TextBox.CreateNew("ID=ee2","Style=width:150px;"));</script></td></tr>
+    <tr><th valign="top">Address</td><td><script>document.write(Control.TextBox.CreateNew("ID=eadd1","Style=width:150px;") + 
+                                                                Control.TextBox.CreateNew("ID=eadd2","Style=width:150px;") +
+                                                                Control.TextBox.CreateNew("ID=eadd3","Style=width:150px;"));</script>
+        <th valign="top">Website</th><td valign="top"><script>document.write(Control.TextBox.CreateNew("ID=esite","Style=width:150px;"));</script></td></tr>
+  </table><br />
+  <script>document.write(Control.Button.CreateNew("Value=Save","onClick=saveContact();","style=width:81px;position:absolute;left:140px;") +
+                         Control.Button.CreateNew("Value=Cancel","onClick=closeEdit();","style=width:81px;position:absolute;left:240px;"));</script>
+</div>
+<script>
+showContact(0);
+</script>
+</body>
+</html>
+<script>
+Me.Title = "Contacts";
+Me.Icon = "images/icons/menu/kaddressbook.png";
+LoadingComplete();
+</script>

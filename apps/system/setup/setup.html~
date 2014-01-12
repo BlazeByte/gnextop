@@ -1,0 +1,40 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<style>
+.title {
+  font-size: 14px;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<script>
+function Agree(){
+  //Setting.SaveSetting(true,"Gnextop","LicenseAgreed",true);
+  location = 'setup2.html';
+  //parent.Window.Close();
+}
+</script>
+<table style="width:100%;height:100%;">
+  <tr><td>
+    <div class="title">Welcome to Gnextop!</div>
+    <div>Congratulations, Gnextop has been successfully installed! Gnextop is a free product released under the New BSD license. By clicking <i>Agree</i>, you agree to the New BSD license outlined below.</div>
+  </td></tr>
+  <tr><td>
+    <iframe src="../../../docs/bsd3.html" style="width:100%;height:65%;"></iframe>
+  </td></tr>
+  <tr>
+  <td><script>
+document.write(Control.Button.CreateNew("ID=agree","onClick=Agree();","Value=Agree","Style=width:44px;float:right;"));
+</script></td>
+  </tr>
+  <tr><td><p></p></td></tr>
+</table>
+</body>
+</html>
+<script>
+Me.Title = "License Agreement";
+Me.Icon = "images/icons/menu/pix.png";
+LoadingComplete();
+</script>

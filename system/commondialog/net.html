@@ -1,0 +1,85 @@
+<script src='../script/controls.api.js'></script>
+<script>
+var Gnextop = top.Gnextop;
+var Head = Gnextop.iScreen.Head;
+var Disk = Gnextop.iScreen.Disk;
+var CommonDialog = Gnextop.iScreen.CommonDialog;
+
+document.write(Head.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/controls.css"));
+document.write(Head.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/application.css"));
+document.write(Head.LinkStyles(Gnextop.Root+"themes/"+Gnextop.ThemeDir+"/css/window.css"));
+
+function Ignore() {
+  CommonDialog.CallAfter();
+  Close();
+}
+
+function Connect(){
+  CommonDialog.CallAfter();
+  frames["inetconnect"].location = "http://www.blazebyte.org/gnextoppsp/conn.php";
+  document.getElementById("connecting").style.visibility="visible";
+  setTimeout("frames['inetconnect'].location='testnet.html';",500);
+}
+
+function ReportConnection(conn) {
+  Gnextop.Connected = conn;
+  if(Gnextop.Connected)
+    Close();
+  else
+    document.getElementById("err").style.visibility="visible";
+
+  document.getElementById("connecting").style.visibility="hidden";
+}
+
+function hideError() {
+  document.getElementById("err").style.visibility="hidden";
+}
+
+function Quit() {
+  CommonDialog.Quit();
+  Close();
+}
+
+function Close() {
+  Gnextop.iScreen.document.getElementById('cdnet').style.visibility='hidden';
+}
+</script>
+<style>
+  th {
+    text-align:left;
+    background-color:#dddddd;
+    border-style:solid;
+    border-color:#999999;
+    border-width:0px 1px 1px 0px;
+    font-weight:normal;
+  }
+  #inetconnect{
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:0px;
+    height:0px;
+    visibility:hidden;
+  }
+  
+  #err, #connecting {
+    position:absolute;
+    height:252px;
+    width:480px;
+    background-color:#ffffff;
+    visibility:hidden;
+  }
+</style>
+<div class="divWindow" style="visibility:visible;height:272px;">
+  <!--img src='' class='WindowIcon' align='left' /--><div class="divWindowTitle" style="padding-bottom:3px;">Connect to the net</div>
+  <div class="divButtons"></a><a href="javascript:Cancel();" class="divClose"></a></div>
+  <div style="width:100%;height:230px;overflow:auto;background-color:#ffffff;">
+  <div id="err">An error occured. For some reason the connection could not be made.<br/><br><script>document.write(Control.Button.CreateNew("Value=OK","onClick=hideError();","Style=width:80px;"));</script></div>
+<div id="connecting">The connection is being made. Please wait...</div>
+  The application you are opening reqiures access to the Internet. Currently your PSP does not have any access to the Internet. To try and establish a connection, press <i>Connect</i> and select a connection; to ignore this warning, and let the application connect when needed, press <i>Ignore</i>; to cancel loading the application, click <i>Quit Application</i>.<br/><br/>
+  
+  <div align="center"><div style="width:80px;"><script>document.write(Control.Button.CreateNew("Value=Connect","onClick=Connect();","Style=width:140px;height:40px;") + "<br /><br />" +
+                         Control.Button.CreateNew("Value=Ignore","onClick=Ignore();","Style=width:140px;height:40px;") + "<br /><br />" +
+                         Control.Button.CreateNew("Value=Quit Application","onClick=Quit();","Style=width:140px;height:40px;"));</script></div></div>
+</div>
+<iframe id="inetconnect" name="inetconnect"></iframe>

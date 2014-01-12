@@ -1,0 +1,55 @@
+<head>
+<style>
+* {
+  font-size:11px;
+}
+
+td {
+  padding:1px;
+  margin:0px;
+  vertical-align:top;
+  border:1px solid #cccccc;
+}
+
+table {
+  padding:0px;
+  margin:0px;
+}
+</style>
+<script>
+var Base=top.Base;
+var strID = parent.strID;
+var Gnextop = top.Gnextop;
+var Head = top.Head;
+document.write(Head.LinkScripts(Gnextop.Root+"system/script/get.api.js"));
+
+</script>
+</head>
+<body>
+<script>
+if(GET("table")!=null) {
+  strTable = GET("table");
+  var HTML = "<h2>Record/Field view on database</h2><br /><table>";
+  HTML += "<tr>";
+  for (var intField in Base[strID].Table[strTable].FieldID){
+    HTML+= "<th>"+Base[strID].Table[strTable].FieldID[intField]+"</th>";
+  }
+  HTML += "</tr>";
+  for (var intRecord = 0; intRecord < Base[strID].Table[strTable].RecordCount; intRecord++){
+    HTML += "<tr>";
+    for (var intField = 0; intField < Base[strID].Table[strTable].FieldID.length; intField++){
+      HTML += "<td>"+Base[strID].Table[strTable].Field[Base[strID].Table[strTable].FieldID[intField]].Record[intRecord].Value+"</td>";
+    }
+    HTML += "</tr>";
+  }
+  HTML += "</table>";
+  HTML += "<p><a href='javascript:parent.showTables();'>Back to Table List</a></p>";
+  document.write(HTML);
+}else {
+  document.write("<h2>Table view on database</h2><br />");
+  for (var intTable = 0; intTable < Base[strID].TableID.length; intTable++){
+    document.write("<a href='javascript:parent.showTable(\""+Base[strID].TableID[intTable]+"\")'>"+Base[strID].TableID[intTable]+"</a><br />");
+  }
+}
+</script>
+</body>

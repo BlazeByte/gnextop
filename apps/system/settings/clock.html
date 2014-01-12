@@ -1,0 +1,32 @@
+<script>
+document.write(parent.Window.LoadApplicationAPI());
+</script>
+<script>
+function saveClockSetting(blnStandard) {
+  if (blnStandard == 12){
+  Setting.SaveSetting(false,"Gnextop","12hr", 12);
+  CommonDialog.ShowMsg(false, "Gnextop", "Saved");
+  }else{
+  Setting.SaveSetting(false,"Gnextop","12hr", 24
+					  );
+  CommonDialog.ShowMsg(false, "Gnextop", "Saved");
+  }
+}
+</script>
+
+<html>
+<body>
+User Settings for Desktop Clock<br/>
+Standard or Millitary Time:
+<br/>
+<script>
+document.write(Control.Button.CreateNew("Value=Standard","onClick=saveClockSetting('12');","Style=width:80px;") +
+Control.Button.CreateNew("Value=Millitary","onClick=saveClockSetting('24');","Style=width:80px;"));
+</script>
+</body>
+</html>
+<script>
+Me.Title = "Clock";
+Me.Icon = "images/icons/menu/clock.png";
+LoadingComplete();
+</script>

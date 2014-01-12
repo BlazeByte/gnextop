@@ -1,0 +1,79 @@
+#panel {
+  background-image:url(../images/bottom-panel-texture.png);
+}
+
+#bottompanel #applet-menu a{
+  position:absolute;
+  display: block;
+  top:0px;
+  left:0px;
+  width:30px;
+  height:20px;
+  background: transparent url(../images/icons/menu/menu-button.png) no-repeat scroll 0 0;
+}
+
+#bottompanel #applet-menu a:hover {
+  background-position: 0 100%;
+}
+
+#bottompanel #applet-taskbar{
+  position:absolute;
+  top:0px;
+  left:32px;
+  width:408px;
+}
+
+#panel #applet-clock{
+  position:absolute;
+  top:0px;
+  right:2px;
+  width:34px;
+  padding-top:4px;
+  font-size:10px;
+  text-align:right;
+  color: #fff;
+}
+
+#panel #applet-tray{
+  position:absolute;
+  top:0px;
+  right:36px;
+  width:24px;
+  padding-top:2px;
+  text-align:right;
+  background: transparent url(../images/paneldiv.png) no-repeat 0 0;
+}
+
+#bottompanel * {
+  color:#000000;
+}
+
+#panel #applet-taskbar .windowTab{
+  position:absolute;
+  background-image:url(../images/windowtab.png);
+  background-repeat: x-repeat;
+  background-position: 0% 50%;
+  top: 2px;
+  width:115px;
+  height:17px;
+  visibility:hidden;
+  font-size:11px;
+}
+
+#panel #applet-taskbar .windowTab div{
+  position: absolute;
+  overflow: hidden;
+  top: 1px;
+  left: 0px;
+  padding: 1px 1px 1px 17px;
+  height: 12px;
+  color: #fff;
+}
+
+#panel #applet-taskbar .windowTabIcon {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  height:14px;
+  width:14px;
+}

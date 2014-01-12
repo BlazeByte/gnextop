@@ -1,0 +1,27 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<script>
+var sub = "m";
+
+function connect() {
+  frames["ytframe"].location = "http://"+sub+".youtube.com?warned=yes";
+}
+</script>
+</head>
+<body>
+<div id="connect">
+This requires an internet connection. Do you wish to connect to the internet?<br/>
+<script>Controls.CreateButton("Value=Yes");</script>
+</div>
+<div id="main">
+<iframe id="ytframe" name="ytframe"></iframe>
+</div>
+</body>
+</html>
+
+<script>
+Me.Title = "YouTube Videos";
+Me.Icon = "images/icons/apps/multimedia-youtube.png";
+LoadingComplete();
+</script>

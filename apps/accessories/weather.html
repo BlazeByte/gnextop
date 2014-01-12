@@ -1,0 +1,34 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<title>Weather</title>
+<style>
+#weather {
+  position:absolute;
+  left:0px;
+  width:100%;
+  border:0px;
+  top:-44px; /* Cut off the logo. It's just too big. */
+  height:264px;
+}
+
+.copyright {
+  position:absolute;
+  left:0px;
+  top:221px;
+  font-size:10px;
+}
+</style>
+</head>
+<body>
+Loading...
+<iframe  name="weather" id="weather" src="http://simpw.com"></iframe>
+<div class="copyright">Powered by simpleweather.com</div>
+</body>
+</html>
+
+<script>
+Me.Title = "Weather";
+Me.Icon = "images/icons/menu/kweather.png";
+LoadingComplete();
+</script>

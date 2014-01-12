@@ -1,0 +1,45 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+  <head>
+    <title>Terminal</title>
+    <style>
+      body { background-color:#000000;}
+    </style>
+  </head>
+  <body>
+    <script language="javascript" type="text/javascript">
+    var strReturn = "";
+
+    function doCmd(){
+      try {
+        eval('strReturn=' + document.getElementById("txtCmd").value);
+      }
+      catch (e) {
+        strReturn+="<br>"+e.message;
+      }
+      writeToHistory(Gnextop.BootNewLine+Gnextop.User+"> "+document.getElementById("txtCmd").innerHTML+Gnextop.BootNewLine+strReturn+Gnextop.BootNewLine);
+    }
+
+    function writeToHistory(strText){
+      document.getElementById("consoleHistory").innerHTML+=strText;
+      //setTimeout("terminalScroll()",500);   // OK, really hacky, but it scrolls to the bottom
+    }
+      function terminalScroll() {
+        frames["consoleHistory"].window.scrollTo(0,100000);
+        setTimeout("terminalScroll()",500);   // OK, really hacky, but it scrolls to the bottom
+      }
+    </script>
+    <body>
+    <div id="consoleHistory" style="width:100%;height:208px;color:#ffffff;">Javascript Console for Gnextop: Use this to execute JavaScript commands. For example: alert("Hello World")</div>
+    <script>
+    document.write(Control.TextBox.CreateNew("ID=txtCmd","Value=confirm(\\\"cheese\\\");","Style=width:440px;background-color:#000000;color:#ffffff;")+
+                   Control.Button.CreateNew("Value=<img src='"+Gnextop.Root+"system/keyboard/return_arrow.png' height='19' />","onClick=doCmd();","Style=width:20px;"));
+    </script>
+  </body>
+</html>
+
+<script>
+Me.Title = "Terminal";
+Me.Icon = "images/icons/menu/konsole.png";
+LoadingComplete();
+</script>

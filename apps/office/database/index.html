@@ -1,0 +1,41 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<script>
+var strID = "b10";
+strAddr = location.href.split("/");
+strAddr.pop();
+strAddr=strAddr.join("/") + "/";
+function loadFile() {
+  Base.LoadBase(CommonDialog.Filename,strID);
+  frames["baseview"].location=strAddr+"baseview.html";
+}
+
+function showTables() {
+  frames["baseview"].location=strAddr+"baseview.html";
+}
+
+function showTable(strTable) {
+  frames["baseview"].location=strAddr+"baseview.html?#table="+strTable;
+//   //frames["baseview"].location.reload();
+}
+</script>
+<body>
+Note: Read-only for now.<br />
+  <script>
+    document.write(Control.Button.CreateNew("Value=Load","onClick=CommonDialog.ShowFile(loadFile);","Style=width:80px;"));
+  </script>
+  <br/>
+  <iframe name="baseview" width="480" height="200"></iframe>
+</body>
+</html>
+
+<script>
+if(GET("file")!=null){
+  Base.LoadBase(GET("file"),strID);
+  frames["baseview"].location=strAddr+"baseview.html";
+}
+
+Me.Title = "Database";
+Me.Icon = "images/icons/menu/base.png";
+LoadingComplete();
+</script>

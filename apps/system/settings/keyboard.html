@@ -1,0 +1,35 @@
+<script>
+document.write(parent.Window.LoadApplicationAPI());
+
+function saveSettings() {
+  Setting.SaveSetting(true,"Gnextop","pspkeyboard",document.getElementById("pspkb").checked);
+  CommonDialog.ShowMsg(false, "Gnextop", "Saved");
+  closeW();
+}
+
+function closeW() {
+  parent.Window.Close();
+}
+</script>
+<html>
+<body>
+By default, Gnextop uses the Gnextop keyboard, which has a layout much like a computer keyboard. If you wish, you can choose to use the standard PSP keyboard instead.<br /><br />
+<i>Changes will take effect when Gnextop is restarted</i><br /><br />
+<label><input type="radio" name="kb" id="gnekb">Use Gnextop keyboard</label><br />
+<label><input type="radio" name="kb" id="pspkb">Use PSP keyboard</label><br /><br />
+<script>
+//alert(Setting.GetSetting(true,"Gnextop","pspkeyboard",false));
+
+document.getElementById("pspkb").checked = (Setting.GetSetting(true,"Gnextop","pspkeyboard",false) ? true : false);
+document.getElementById("gnekb").checked = (Setting.GetSetting(true,"Gnextop","pspkeyboard",false) ? false : true);
+
+document.write(Control.Button.CreateNew("Value=Save","onClick=saveSettings();","Style=width:80px;")+
+               Control.Button.CreateNew("Value=Cancel","onClick=closeW();","Style=width:80px;"));</script>
+</body>
+</html>
+
+<script>
+Me.Title = "Keyboard Settings";
+Me.Icon = "images/icons/menu/keyboard.png";
+LoadingComplete();
+</script>

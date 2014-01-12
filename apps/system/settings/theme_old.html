@@ -1,0 +1,57 @@
+<script>
+document.write(parent.Window.LoadApplicationAPI());
+function saveSettings() {
+  Setting.SaveSetting(false,"Gnextop","Theme",document.getElementById("getTheme").value);
+  CommonDialog.ShowMsg(false, "Gnextop", "Saved! Restart to see the new theme!");
+}
+function Reload() {
+  location=location.href;
+}
+function themeInstall() {
+	var content = document.getElementById('themeinstall').files[0].getAsBinary();
+	var lines = content.split("\r\n");
+	if(lines.length < 2) {
+		CommonDialog.ShowMsg(false, "Gnextop", "Not a valid theme installation file!");
+		return;
+	}
+	var themeInst = new Array();
+	for(var i in lines) {
+		var wat = lines[i].split('=');
+		if(wat.length < 2) {
+			CommonDialog.ShowMsg(false, "Gnextop", "Invalid or corrupt theme installation file!");
+			return;
+		}
+		themeInst[wat[0]] = wat[1];
+	}
+	if(Base.FindRecords('sys', 'themes', 'title='+themeInst['Title']+',author='+themeInst['Author']+',themedir='+themeInst['ThemeDir']).length > 0) {
+		CommonDialog.ShowMsg(false, "Gnextop", "Theme is already installed!");
+		return;
+	}
+	Base.CreateRecord('sys', 'themes', 'title='+themeInst['Title']+',author='+themeInst['Author']+',themedir='+themeInst['ThemeDir']);
+	CommonDialog.ShowMsg(false, "Gnextop", "Theme installed!");
+	Reload();
+}
+</script>
+<html>
+<body>
+Theme Changer<br />
+Select theme:
+<select id="getTheme">
+<script>
+for(var i in Base["sys"].Table["themes"].Field["themedir"].Record) {
+	document.write('<option value="'+Base["sys"].Table["themes"].Field["themedir"].Record[i].Value+'">'+Base["sys"].Table["themes"].Field["title"].Record[i].Value+'</option>');
+}
+</script>
+</select>
+<script>document.write(Control.Button.CreateNew("Value=Save","onClick=saveSettings();","Style=width:80px;"));</script><br />
+Or install a new theme (navigate to the theme's THEME.JS file):<br/>
+<input type="file" id="themeinstall"><script>document.write(Control.Button.CreateNew("Value=Install Theme","onClick=themeInstall();","Style=width:80px;"));</script>
+<br/>
+<script>document.write(Control.Button.CreateNew("Value=Restart","onClick=top.window.location.href=top.window.location.href","Style=width:80px;"));</script>
+</body>
+</html>
+<script>
+Me.Title = "Theme Settings";
+Me.Icon = "images/icons/menu/theme.png";
+LoadingComplete();
+</script>

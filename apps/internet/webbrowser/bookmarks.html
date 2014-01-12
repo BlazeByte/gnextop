@@ -1,0 +1,54 @@
+<style>
+body {
+  margin:3px;
+}
+
+#bookmarks, #links {
+  float:left;
+  height:190px;
+  width:225px;
+  border:1px solid #cccccc;
+  background-color:#fcfcfc;
+  margin:3px;
+  padding:2px;
+  font-size:12px;
+}
+
+h1 {
+  margin:0px;
+  font-size:14px;
+}
+</style>
+<script>
+var WebBase = parent.WebBase;
+var CommonDialog = parent.CommonDialog;
+function newBookmark() {
+  var createRecord = function(bookmarkName, bookmarkURL) {
+    if(!bookmarkName || !bookmarkURL) {
+		CommonDialog.ShowMsg (false, 'Web Browser', 'Bookmark Name or URL cannot be blank!');
+		return;
+	}
+	top.Base.CreateRecord('web','bookmarks','name='+bookmarkName+',url='+bookmarkURL);
+  }
+  var name = prompt('bookmark name');
+  var url = prompt('bookmark URL');
+  createRecord(name, url);
+}
+</script>
+<div id="bookmarks">
+<h1>Bookmarks:</h1>
+<script>
+for(var intRecord = 0; intRecord < WebBase.Table["bookmarks"].RecordCount; intRecord ++) {
+  document.write("<a href='"+WebBase.Table["bookmarks"].Field["url"].Record[intRecord].Value+"'>"+WebBase.Table["bookmarks"].Field["name"].Record[intRecord].Value+"</a><br />");
+}
+</script>
+<a href="javascript:newBookmark();">Add bookmark</a>
+</div>
+
+<div id="links">
+<h1>Useful Links:</h1>
+BlazeByte<br />
+BlazeByte Forums<br/>
+Gnextop Add-ons<br/>
+Wikipedia<br/>
+</div>

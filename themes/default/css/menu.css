@@ -1,0 +1,39 @@
+.divMenu {
+  position:absolute;
+  width:120px;
+  background-color:#ECEBEB;
+  border:1px solid #B5B1B1;
+  visibility:hidden;
+  z-index:100;
+  padding: 3px 0px 0px 2px;
+  top:0px;
+}
+
+.divMenu * {
+  font-size:11px;
+}
+
+.divMenu .menuitem {
+  clear:both;
+  height:20px;
+}
+
+.divMenu .menuitem:hover {
+  background-color: #3344ee;
+  color: #fff;
+}
+
+.divMenu .menuitem .menutext {
+  float:left;
+  white-space:nowrap;
+  width:80px;
+  padding: 3px 1px;
+}
+
+.divMenu .menuitem .menuarrow {
+  float:right;
+  margin:4px 3px 0px 0px;
+  background-image:url(../images/menu-arrow.png);
+  width:5px;
+  height:8px;
+}

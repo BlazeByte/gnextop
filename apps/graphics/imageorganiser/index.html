@@ -1,0 +1,162 @@
+<script>document.write(parent.Window.LoadApplicationAPI());</script>
+<html>
+<head>
+<title>Image Viewer</title>
+<style>
+body{
+  margin:0px;
+}
+
+#viewimage{
+  height:100%;
+  width:100%;
+  position:absolute;
+  top:0px;
+  left:0px;
+  background-color:#000000;
+  visibility:hidden;
+  overflow:none;
+  text-align:center;
+}
+
+#addphoto {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  visibility:hidden;
+}
+
+#iphoto {
+  float:right;
+  height:230px;
+  width:381px;
+  border:1px solid #999999;
+  margin:1px;
+}
+
+#bigimage0, #bigimage1 {
+  position:absolute;
+}
+</style>
+<script>
+  var Imgs = new Array();
+  var selimg = 0;
+  var activeimg = 1;
+  
+  if(!Base.LoadBase("photomanager","photo")) { // Load database. If it does not exist, then make it
+    Base.CreateBase("photomanager");
+    Base.LoadBase("photomanager","photo");
+    Base.CreateTable("photo","photos","url,title");
+    Base.WriteBase("photo");
+  }
+  
+  function showAddPhoto(){
+    document.getElementById("mainscreen").style.visibility="hidden";
+    document.getElementById("addphoto").style.visibility="visible";
+  }
+  
+  function hideAddPhoto(){
+    document.getElementById("mainscreen").style.visibility="visible";
+    document.getElementById("addphoto").style.visibility="hidden";
+  }
+  
+  function addPhoto(url,title) {
+	if(!url || !title) {
+		CommonDialog.ShowMsg(false, 'Image Organiser', 'The URL or title cannot be null.');
+		return;
+	}
+    Base.CreateRecord("photo","photos","url=file:" + url + ",title=" + title);
+    reloadImageList();
+    hideAddPhoto();
+  }
+
+  function reloadImageList() {
+    frames["iphoto"].location=frames["iphoto"].location.href;
+  }
+
+  function hideBigImage(){
+    document.getElementById("viewimage").style.visibility="hidden";
+    document.getElementById("mainscreen").style.visibility="visible";
+    document.getElementById("bigimage0").style.visibility='hidden';
+    document.getElementById("bigimage1").style.visibility='hidden';
+  }
+
+  function viewImage(buffer){
+    if(!isset(buffer)) document.getElementById("bigimage"+activeimg).style.visibility='visible';
+    document.getElementById("bigimage"+activeimg).src=Imgs[selimg].URL;
+    document.getElementById("mainscreen").style.visibility="hidden";
+    document.getElementById("viewimage").style.visibility="visible";
+  }
+  
+  function showSlideshow() {
+    viewImage();
+    nextSlide();
+  }
+  
+  function nextSlide() {
+    if(selimg==Imgs.length) {
+      hideBigImage();
+    } else {
+      selimg++;
+      document.getElementById("bigimage"+activeimg).style.visibility='visible';
+      activeimg = (activeimg==0) ? 1 : 0;
+      document.getElementById("bigimage"+activeimg).style.visibility='hidden';
+      if(selimg<Imgs.length) viewImage(true);
+      setTimeout("nextSlide()",3000);
+    }
+  }
+  
+  function deleteImage() {
+    if (confirm('Are you sure you want to delete this image?')) {
+      Base.DeleteRecords("photo","photos",Base.FindRecords("photo","photos","url="+Imgs[selimg].URL+",title="+Imgs[selimg].Title));
+      reloadImageList();
+    }
+  }
+  
+  function showEditTitle () {
+    Imgs[selimg].Title = prompt("New title:");
+    Base["photo"].Table["photos"].Field["title"].Record[selimg].Value = Imgs[selimg].Title;
+    Base.WriteBase("photo");
+    reloadImageList();
+  }
+</script>
+
+</head>
+
+<body>
+<div id="mainscreen">
+  <div style="float:left; width:82px; padding:1px;">
+    <b style="font-size:18px;">Gnextop</b><br/>
+    Image Organizer<br/><br/>
+    <script>
+    document.write(Control.Button.CreateNew("Value=Add Image","onClick=showAddPhoto();","style=width:80px;") + "<br />" +
+                   Control.Button.CreateNew("Value=Remove Image","onClick=deleteImage();","style=width:80px;") + "<br />" +
+                   Control.Button.CreateNew("Value=Edit Title","onClick=showEditTitle();","style=width:80px;") + "<br />" +
+                   Control.Button.CreateNew("Value=View Image","onClick=viewImage();","style=width:80px;") + "<br />" +
+                   Control.Button.CreateNew("Value=Slideshow","onClick=showSlideshow();","style=width:80px;") + "<br />");
+    </script>
+  </div>
+  <iframe src="photos.html" name="iphoto" id="iphoto"></iframe>
+</div>
+<div id="addphoto">
+  <table>
+  <tr><td>Select your image:</td><td><input type="file" id="photofile" onchange="var filename=this.value.split('/'); filename = filename[filename.length-1];document.getElementById('phototitle').innerHTML=filename;document.getElementById('phototitle').value=filename;"/></td></tr>
+  <tr><td>Title:</td><td>
+  <script>
+  document.write(Control.TextBox.CreateNew("ID=phototitle","Value=","Style=width:184px;") + "</td></tr><table>" +
+                 Control.Button.CreateNew("Value=OK","onClick=addPhoto(document.getElementById('photofile').value, document.getElementById('phototitle').value);","style=width:50px;") + 
+                 Control.Button.CreateNew("Value=Cancel","onClick=hideAddPhoto();","style=width:50px;"));
+  </script>
+</div>
+<div id="viewimage" onclick="hideBigImage();">
+  <img src="" width="480" id="bigimage0" />
+  <img src="" width="480" id="bigimage1" style="visibility:hidden;" />
+</div>
+</body>
+</html><script>
+Me.Title = "Image Organizer";
+Me.Icon = "images/icons/menu/imageorganiser.png";
+LoadingComplete();
+</script>
